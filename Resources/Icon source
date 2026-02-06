@@ -1,0 +1,28 @@
+local BHU2_Icon = BHU2_Icon or Instance.new("ImageButton", BHU2 or Instance.new("ScreenGui", game.CoreGui))
+BHU2_Icon.Size = UDim2.new(0, math.floor(math.max(32, math.min(game.Players.LocalPlayer:GetMouse().ViewSizeX, game.Players.LocalPlayer:GetMouse().ViewSizeY) * 0.15)), 0, math.floor(math.max(32, math.min(game.Players.LocalPlayer:GetMouse().ViewSizeX, game.Players.LocalPlayer:GetMouse().ViewSizeY) * 0.15)))
+BHU2_Icon.BackgroundColor3 = Color3.new(0.075, 0.075, 0.075)
+BHU2_Icon.Image = "rbxassetid://126371842393375"
+BHU2_Icon.BorderSizePixel = 0
+BHU2_Icon.Draggable = true
+
+BHU2_Icon_Corner = Instance.new("UICorner", BHU2_Icon)
+BHU2_Icon_Corner.CornerRadius = UDim.new(0.2, 0)
+
+BHU2_Icon:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+  local SSx, SSy = game.Players.LocalPlayer:GetMouse().ViewSizeX, game.Players.LocalPlayer:GetMouse().ViewSizeY * 1.1
+  local xval, yval = BHU2_Icon.AbsolutePosition.X, BHU2_Icon.AbsolutePosition.Y
+  if (xval + BHU2_Icon.AbsoluteSize.X) >= SSx then
+    xval = SSx - BHU2_Icon.AbsoluteSize.X
+  elseif (yval + BHU2_Icon.AbsoluteSize.Y) >= SSy then
+    yval = SSy - BHU2_Icon.AbsoluteSize.Y
+  end
+  
+  xval = (xval < 0 and 0) or xval
+  yval = (yval < 0 and 0) or yval
+  
+  BHU2_Icon.Position = UDim2.new(0, math.floor(xval), 0, math.floor(yval))
+end)
+
+BHU2_Icon.MouseButton1Click:Connect(function()
+  BHU2_Window.Visible = not BHU2_Window.Visible
+end)
