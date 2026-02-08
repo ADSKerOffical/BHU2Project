@@ -912,6 +912,6 @@ Tabs.Settings:AddToggle("MyToggle", {
 
 queueonteleport([[
   if tac == true then
-    -- loadstring
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/BudgieHubUniversal2.lua"))()
   end
 ]])
