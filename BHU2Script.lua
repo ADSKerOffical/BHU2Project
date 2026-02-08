@@ -22,7 +22,7 @@ local Window = Fluent:CreateWindow({
 })
 
 Window.Root.AnchorPoint = Vector2.new(0.5, 0.5)
-Window.BackgroundTransparency = 1
+Window.Root.BackgroundTransparency = 1
 Window.Root.Position = UDim2.new(0.5, 0, 0.5, 0)
 
 Window:Dialog({
