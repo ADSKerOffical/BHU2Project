@@ -1,0 +1,14 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub | Cool Rarities")
+
+Tab:Toggle("Collect all clovers", function(arg)
+   Hhh = arg
+   while Hhh and task.wait() do
+     for _, clever in Workspace.clova:GetDescendants() do
+  if clever:IsA("BasePart") then
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, clever, 0)
+  end
+end
+   end
+end)
