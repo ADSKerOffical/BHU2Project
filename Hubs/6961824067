@@ -1,0 +1,658 @@
+local Library = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local function GetDevice(): string
+ local GS, UIS = game:GetService("GuiService"), game:GetService("UserInputService")
+   if (GS:IsTenFootInterface()) then
+      return "Console"
+  elseif (UIS.TouchEnabled and not UIS.MouseEnabled) then
+      return "Mobile"
+  else
+      return "PC"
+  end
+end
+
+local function getControlledParts()
+  local parts = {}
+  for _, part in next, game.Workspace:GetDescendants() do
+    if part:IsA("BasePart") and part:FindFirstChild("PartOwner") and part.PartOwner.Value == game.Players.LocalPlayer.Name then
+      table.insert(parts, part)
+    end
+  end
+  return parts
+end
+
+local function getControlledModels()
+  local models = {}
+  for _, model in next, game.Workspace:GetDescendants() do
+    if model:IsA("Model") and model:FindFirstChildOfClass("Humanoid") and model:FindFirstChild("Head") and model.Head:FindFirstChild("PartOwner") and model.Head.PartOwner.Value == game.Players.LocalPlayer.Name then
+      table.insert(models, model)
+    end
+  end
+  return models
+end
+
+local function isnetworkowner(part)
+  return (part.ReceiveAge == 0 and gethiddenproperty(part, "NetworkIsSleeping") == false)
+end
+
+local function isnetworkownerp(part)
+  return (part.ReceiveAge == 0 and gethiddenproperty(part, "NetworkIsSleeping") == false) and part:FindFirstChild("PartOwner") and part.PartOwner.Value == game.Players.LocalPlayer.Name
+end
+
+local function isnetworkownerm(model)
+  return (model.HumanoidRootPart.ReceiveAge == 0 and gethiddenproperty(model.HumanoidRootPart, "NetworkIsSleeping") == false) and model.Head:FindFirstChild("PartOwner") and model.Head.PartOwner.Value == game.Players.LocalPlayer.Name
+end
+
+local function controlPart(part: BasePart)
+  game.ReplicatedStorage.GrabEvents.SetNetworkOwner:FireServer(part, part.CFrame)
+end
+
+local function letPart(part: BasePart)
+  game.ReplicatedStorage.GrabEvents.DestroyGrabLine:FireServer(part)
+end
+
+local function getBlobMan()
+  for _, model in next, game.Workspace:GetDescendants() do
+    if model:IsA("Model") and model.Name == "CreatureBlobman" then
+      return model
+    end
+  end 
+  return nil
+end
+
+local Window = Fluent:CreateWindow({
+    Title = "Budgie Hub | FTAP (Alpha)",
+    SubTitle = "by ADSKer (ADSKer_man222)",
+    TabWidth = 160,
+    Size = UDim2.new(0.7, 0, 1, 0),
+    Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
+
+local function GetFrame()
+  for _, gui in next, game.CoreGui:GetDescendants() do
+    if gui:IsA("TextLabel") and gui.Text:lower():find("budgie hub | ftap") then
+      return gui.Parent.Parent.Parent
+    end
+  end
+end
+
+if GetDevice() == "Mobile" then
+  game.Players.LocalPlayer.PlayerGui.ScreenOrientation = Enum.ScreenOrientation.LandscapeRight
+  
+  if GetFrame() then
+    local fram = GetFrame()
+    local sce = Instance.new("ScreenGui", game.CoreGui)
+sce.Name = "ToggleBuguh"
+sce.ResetOnSpawn = false
+sce.Enabled = true
+
+fram.Parent.Destroying:Connect(function()
+  sce:Destroy()
+end)
+
+local button = Instance.new("TextButton", sce)
+button.Text = "Show window"
+button.TextWrapped = true
+button.Size = UDim2.new(0.05, 0, 0.1, 0)
+button.TextSize = button.TextSize / 1.05
+button.Position = UDim2.new(0, 0, 0.3, 0)
+button.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+button.BackgroundTransparency = 0.1
+button.TextColor3 = Color3.new(1, 1, 1)
+button.Active = true
+button.Draggable = true
+
+local uicorner = Instance.new("UICorner", button)
+uicorner.CornerRadius = UDim.new(0.2, 0)
+
+button.MouseButton1Click:Connect(function()
+  fram.Visible = not fram.Visible
+end)
+  end
+end
+
+local Tabs = {
+  GrabMod = Window:AddTab({ Title = "Grab mod", Icon = "rbxassetid://17313313998"}),
+  Aura = Window:AddTab({ Title = "Auras", Icon = "rbxassetid://129855843582244"}),
+  Blobman = Window:AddTab({ Title = "Blob man", Icon = "rbxassetid://81412724248693"}),
+  Defense = Window:AddTab({ Title = "Defense", Icon = "rbxassetid://7169354142"}),
+  Special = Window:AddTab({ Title = "Special", Icon = "rbxassetid://6523858394"})
+}
+
+local GDV, OnlyParts, OnlyHumanoid = 30, false, false
+local PushCounter, FlingCounter, GlitchCounter, KillCounter = false, false, false, false
+local Input = Tabs.GrabMod:AddInput("Input", {
+    Title = "Modify grab distance",
+    Description = "Your grab distance increases when you grab something",
+    Default = 20,
+    Placeholder = "Set",
+    Numeric = true,
+    Finished = true,
+    Callback = function(Value)
+        GDV = Value
+    end
+})
+
+Tabs.GrabMod:AddToggle("Defense", {
+  Title = "Filter parts",
+  Description = "Modificated grab distance apply only on parts",
+  Default = false,
+  Callback = function(Value)
+    OnlyParts = Value
+  end
+})
+
+Tabs.GrabMod:AddToggle("Defense", {
+  Title = "Filter humanoids",
+  Description = "Modificated grab distance apply only on humanoids",
+  Default = false,
+  Callback = function(Value)
+     OnlyHumanoid = Value
+  end
+})
+
+Tabs.GrabMod:AddToggle("Jie", {
+  Title = "Use modify grab distance",
+  Description = "You using modified grab distance. I haven\'t been able to increase the distance limit specifically yet",
+  Default = false,
+  Callback = function(Value)
+  jnue = Value
+ local con8 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+      if class.Parent.Parent:IsA("Model") and class.Parent.Parent:FindFirstChildOfClass("Humanoid") and OnlyHumanoid == true then
+        getsenv(game.Players.LocalPlayer.Character.GrabbingScript).distance = GDV or 30
+      elseif not class.Parent.Parent: FindFirstChildOfClass("Humanoid") and OnlyParts == true then
+        getsenv(game.Players.LocalPlayer.Character.GrabbingScript).distance = GDV or 30
+      end
+    end
+  end
+end)
+repeat task.wait() until jnue == false con8:Disconnect()
+  end
+})
+
+local PGS = 1000
+local Slider = Tabs.GrabMod:AddInput("Input", {
+    Title = "Set push grab strength",
+    Description = "",
+    Default = 1000,
+    Placeholder = "Set",
+    Numeric = true,
+    Finished = true,
+    Callback = function(Value)
+        PGS = tonumber(Value)
+    end
+})
+
+Tabs.GrabMod:AddToggle("GrabMod", {
+  Title = "Push grab",
+  Description = "When you release the part or humanoid you push it",
+  Default = false,
+  Callback = function(Value)
+     aso = Value
+local con2 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+      if class.Parent.Parent:IsA("Model") and class.Parent.Parent:FindFirstChildOfClass("Humanoid") then
+      local model, part = class.Parent.Parent, class.Parent
+        repeat task.wait() until not part:FindFirstChild("PartOwner") if aso == false then return end
+      local bv = Instance.new("BodyVelocity", model.HumanoidRootPart)
+      bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+      bv.Velocity = workspace.CurrentCamera.CFrame.LookVector * PGS
+      game.Debris:AddItem(bv, task.wait())
+        else
+      local part = class.Parent
+        repeat task.wait() until not part:FindFirstChild("PartOwner") if aso == false then return end
+      local bv = Instance.new("BodyVelocity", part)
+      bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+      bv.Velocity = workspace.CurrentCamera.CFrame.LookVector * PGS
+      game.Debris:AddItem(bv, task.wait())
+      end
+    end
+  end
+end)
+repeat task.wait() until aso == false con2:Disconnect()
+  end
+})
+
+Tabs.GrabMod:AddToggle("Defense", {
+  Title = "Fling grab",
+  Description = "When you grab a part or humanoid they disappeared",
+  Default = false,
+  Callback = function(Value)
+  hjw = Value
+local con4 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+      if class.Parent.Parent:IsA("Model") and class.Parent.Parent:FindFirstChildOfClass("Humanoid") then
+       local model = class.Parent.Parent
+        local bav = Instance.new("BodyAngularVelocity", model.HumanoidRootPart.RagdollTouchedHitbox)
+       bav.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+       bav.AngularVelocity = Vector3.new(1e9, 1e9, 1e9)
+       game.Debris:AddItem(bav, task.wait())
+        else
+       local part = class.Parent
+       local bav = Instance.new("BodyAngularVelocity", part)
+       bav.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+       bav.AngularVelocity = Vector3.new(1e9, 1e9, 1e9)
+       game.Debris:AddItem(bav, task.wait())
+      end
+    end
+  end
+end)
+repeat task.wait() until hjw == false con4:Disconnect()
+  end
+})
+
+Tabs.GrabMod:AddToggle("GrabMod", {
+  Title = "Kill grab",
+  Description = "You kill a player when you grab him",
+  Default = false,
+  Callback = function(Value)
+  euu = Value
+local con7 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+      if class.Parent.Parent:IsA("Model") and class.Parent.Parent:FindFirstChildOfClass("Humanoid") then
+       local model = class.Parent.Parent
+       controlPart(model.HumanoidRootPart)
+         model:BreakJoints()
+       letPart(model.HumanoidRootPart)
+      end
+    end
+  end
+end)
+repeat task.wait() until euu == false con7:Disconnect()
+  end
+})
+
+Tabs.GrabMod:AddToggle("Defense", {
+  Title = "Noclip grab",
+  Description = "The object you grab will pass through matter",
+  Default = false,
+  Callback = function(Value)
+  kejhe = Value
+   local con12 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+      if class.Parent.Parent ~= workspace then
+        for _, part in next, class.Parent.Parent:GetDescendants() do
+           if part:IsA("BasePart") then
+             part.CanCollide = false
+           end
+        end
+      end
+    end
+  end
+end)
+repeat task.wait() until kejhe == false con12:Disconnect()
+  end
+})
+
+Tabs.GrabMod:AddToggle("Defense", {
+  Title = "Void grab",
+  Description = "When you grab something, it teleports into the void",
+  Default = false,
+  Callback = function(Value)
+Ijek = Value
+local con13 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+    if class.Parent.Parent ~= workspace then
+     for _, part in next, class.Parent.Parent:GetDescendants() do
+      if part:IsA("BasePart") then
+        part.CFrame = CFrame.new(0, workspace.FallenPartsDestroyHeight + 2, 0)
+      end
+    end
+    end
+    end
+  end
+end)
+repeat task.wait() until Ijek == false con13:Disconnect()
+  end
+})
+
+Tabs.GrabMod:AddToggle("GrabMod", {
+  Title = "Massless grab",
+  Description = "When you grab a part or humanoid they become very lightweight", 
+  Default = false,
+  Callback = function(Value)
+  ajl = Value
+    local con3 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+      if class.Parent.Parent:IsA("Model") and class.Parent.Parent:FindFirstChildOfClass("Humanoid") then
+      local model = class.Parent.Parent
+      for _, part in next, model:GetDescendants() do
+        if part:IsA("BasePart") then
+         part.CustomPhysicalProperties = PhysicalProperties.new(0, 1, 1, 0, 0)
+       end
+      end
+        else
+      local part = class.Parent
+        if part.Parent ~= nil then
+          for _, ei in next, part.Parent:GetDescendants() do
+            if ei:IsA("BasePart") then
+              ei.CustomPhysicalProperties = PhysicalProperties.new(0, 1, 1, 0, 0)
+            end
+          end
+        end
+      end
+    end
+  end
+end)
+repeat task.wait() until ajl == false con3:Disconnect()
+  end
+})
+
+Tabs.GrabMod:AddToggle("Defense", {
+  Title = "Shoot grab",
+  Description = "After release, uses the object as a projectile",
+  Default = false,
+  Callback = function(Value)
+   jeijd = Value
+   local con5 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+       local part = class.Parent
+         repeat task.wait() until not part:FindFirstChild("PartOwner")
+       part.CanCollide = false
+       part.CustomPhysicalProperties = PhysicalProperties.new(100, 0, 0, 0, 0)
+       part.Massless = false
+       part.RootPriority = -127
+       
+       local bav = Instance.new("BodyVelocity", part)
+       bav.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+       bav.Velocity = workspace.CurrentCamera.CFrame.LookVector * PGS
+       
+       local bd = Instance.new("BodyAngularVelocity", part)
+       bd.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+       bd.AngularVelocity = Vector3.new(PGS, PGS, PGS)
+    end
+  end
+end)
+repeat task.wait() until jeijd == false con5:Disconnect()
+  end
+})
+
+Tabs.GrabMod:AddToggle("GrabMod", {
+  Title = "Glitch grab",
+  Description = "Distorts the position of the humanoid",
+  Default = false,
+  Callback = function(Value)
+    eih = Value
+local con6 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+      if class.Parent.Parent:IsA("Model") and class.Parent.Parent:FindFirstChildOfClass("Humanoid") then
+       local model = class.Parent.Parent
+       model.HumanoidRootPart.Position += Vector3.new(10000, 10000, 10000)
+      end
+    end
+  end
+end)
+repeat task.wait() until eih == false con6:Disconnect()
+  end
+})
+
+Tabs.GrabMod:AddToggle("Defense", {
+  Title = "Flinger grab",
+  Description = "When you grab the part he begins to throw away all parts he touches",
+  Default = false,
+  Callback = function(Value)
+ pejnw = Value
+local con11 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class.Value == game.Players.LocalPlayer.Name then
+    if class.Parent:IsA("BasePart") and class.Parent.Anchored == false then
+      local parte = class.Parent
+      if parte.Parent ~= workspace then
+      for _, part in next, parte.Parent:GetDescendants() do
+        if part:IsA("BasePart") then
+        task.spawn(function()
+        repeat 
+          game:GetService("RunService").Heartbeat:Wait()
+ local vel = part.Velocity
+  part.Velocity = vel * 100000 + Vector3.new(0, 100000, 0)
+  game:GetService("RunService").RenderStepped:Wait()
+   part.Velocity = vel
+  part.Velocity = vel + Vector3.new(0, 0, 0) 
+        until not parte:FindFirstChild("PartOwner")
+     end)
+  end
+  end
+  end
+  end
+  end
+end)
+repeat task.wait() until pejnw == false con11:Disconnect()
+  end
+})
+
+
+
+Tabs.Aura:AddToggle("Pl", {
+  Title = "Push Aura",
+  Description = "Anyone who comes close will be thrown back",
+  Default = false,
+  Callback = function(Value)
+  yey = Value
+while yey and task.wait() do
+  for _, part in next, game.Workspace:GetPartBoundsInRadius((game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart").Position, 30) do
+    if part.Anchored == false and not part:IsDescendantOf(game.Players.LocalPlayer.Character) then
+    local bv = Instance.new("BodyVelocity")
+    bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+      if part.Parent ~= nil and part.Parent:IsA("Model") and part.Parent:FindFirstChildOfClass("Humanoid") then
+     game.ReplicatedStorage.GrabEvents.SetNetworkOwner:FireServer(part.Parent.HumanoidRootPart, part.Parent.HumanoidRootPart.CFrame)
+     bv.Parent = part.Parent.HumanoidRootPart
+     bv.Velocity = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - bv.Parent.Position).Unit * -1000
+     game.Debris:AddItem(bv, task.wait())
+        else
+     game.ReplicatedStorage.GrabEvents.SetNetworkOwner:FireServer(part, part.CFrame)
+     bv.Parent = part
+     bv.Velocity = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - bv.Parent.Position).Unit * -1000
+     game.Debris:AddItem(bv, task.wait())
+      end
+    end
+  end
+end
+  end
+})
+
+
+
+local Input = Tabs.Blobman:AddInput("Input", {
+    Title = "Set blobman speed",
+    Description = "Sets the speed of the blobman you are sitting on",
+    Default = 20,
+    Placeholder = "Set speed",
+    Numeric = true, -- Only allows numbers
+    Finished = true, -- Only calls callback when you press enter
+    Callback = function(Value)
+        if game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.Name == "CreatureBlobman" then
+         game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent:FindFirstChildOfClass("Humanoid").WalkSpeed = Value
+       end
+    end
+})
+
+
+
+Tabs.Defense:AddToggle("Defense", {
+  Title = "Anti grab",
+  Description = "Players can\'t grab you",
+  Default = false,
+  Callback = function(Value)
+    asu = Value
+local con1 = game.Players.LocalPlayer.IsHeld:GetPropertyChangedSignal("Value"):Connect(function()
+  if game.Players.LocalPlayer.IsHeld.Value and not game.Players.LocalPlayer.Character.Humanoid.SeatPart then
+    controlPart(game.Players.LocalPlayer.Character.HumanoidRootPart)
+    game:GetService("ReplicatedStorage").CharacterEvents.Struggle:FireServer()
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState("GettingUp")
+    game.Players.LocalPlayer.Character.Humanoid.Sit = false
+   local tim = os.clock()
+
+    for _, part in next, game.Players.LocalPlayer.Character:GetDescendants() do
+       if part:IsA("BasePart") then
+         part.Massless = false
+         part.RootPriority = 127
+         part:ResetPropertyToDefault("CustomPhysicalProperties")
+         part.Anchored = true task.spawn(function() repeat task.wait() until game.Players.LocalPlayer.IsHeld.Value == false part.Anchored = false end)
+         part.Velocity = Vector3.zero
+         part.AssemblyAngularVelocity = Vector3.zero
+       elseif part:IsA("BodyMover") then
+         part:Destroy()
+      end
+    end
+   local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    repeat task.wait()
+game:GetService("ReplicatedStorage").CharacterEvents.Struggle:FireServer()
+ game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos 
+until game.Players.LocalPlayer.IsHeld.Value == false and game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored == false
+  end
+end)
+repeat task.wait() until asu == false con1:Disconnect()
+  end
+})
+
+Tabs.Defense:AddToggle("Defense", {
+  Title = "Anti void",
+  Description = "You won\'t die if you fall into the void",
+  Default = false,
+  Callback = function(Value)
+     juw = Value
+     while juw and task.wait() do
+       local human = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):FindFirstChild("HumanoidRootPart")
+       if human then
+         if (human.CFrame.Y <= workspace.FallenPartsDestroyHeight + 10) or (human.CFrame.Y >= 2000) then
+           human.Velocity = Vector3.zero
+           human.AssemblyAngularVelocity = Vector3.zero
+           human.CFrame = workspace.SpawnLocation.CFrame * CFrame.new(0, 2, 0)
+         end
+       end
+     end
+  end
+})
+
+Tabs.Defense:AddToggle("Defense", {
+  Title = "Anti fire",
+  Description = "When you start to burn, you teleport to the fire extinguisher",
+  Default = false,
+  Callback = function(Value)
+     wij = Value
+while wij and task.wait() do
+  local hum = (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+  if hum and hum:FindFirstChild("FirePlayerPart") and hum.FirePlayerPart.CanBurn.Value == true then
+    local pos = hum.CFrame
+    local fireex = function()
+      return workspace:FindFirstChild(game.Players.LocalPlayer.Name .. "SpawnedInToys"):FindFirstChild("FireExtinguisher")
+    end
+    if not fireex() then
+      coroutine.wrap(function() game.ReplicatedStorage.MenuToys.SpawnToyRemoteFunction:InvokeServer("FireExtinguisher", hum.CFrame, Vector3.new(0, 0, 0)) end)()
+      repeat task.wait() until fireex() ~= nil and fireex():FindFirstChild("SoundPart")
+    end
+      repeat task.wait() hum.CFrame = fireex().SoundPart.CFrame until hum.FirePlayerPart.CanBurn.Value == false
+    hum.CFrame = pos
+  end
+end
+  end
+})
+
+Tabs.Defense:AddToggle("Defense", {
+  Title = "Filter push counter",
+  Description = "Counter can push the one who grab you",
+  Default = false,
+  Callback = function(Value)
+     PushCounter = Value
+  end
+})
+
+Tabs.Defense:AddToggle("Defense", {
+  Title = "Filter fling counter",
+  Description = "Counter can fling the one who grab you",
+  Default = false,
+  Callback = function(Value)
+    FlingCounter = Value
+  end
+})
+
+Tabs.Defense:AddToggle("Defense", {
+  Title = "Filter kill counter",
+  Description = "Counter can kill the one who grab you",
+  Default = false,
+  Callback = function(Value)
+    KillCounter = Value
+  end
+})
+
+Tabs.Defense:AddToggle("Defense", {
+  Title = "Filter glitch counter",
+  Description = "Counter can glitch the one who grab you",
+  Default = false,
+  Callback = function(Value)
+    GlitchCounter = Value
+  end
+})
+
+Tabs.Defense:AddToggle("Defense", {
+  Title = "Enable counter",
+  Description = "If someone grabs you, you grab them back",
+  Default = false,
+  Callback = function(Value)
+   euhj = Value
+   local con10 = game.Workspace.DescendantAdded:Connect(function(class)
+  if class:IsA("ValueBase") and class.Name == "PartOwner" and class:IsDescendantOf(game.Players.LocalPlayer.Character) then
+    local plr = game.Players:FindFirstChild(tostring(class.Value))
+      if plr.Character.Humanoid.SeatPart and plr.Character.Humanoid.SeatPart.Parent.Name == "CreatureBlobman" then return end
+    controlPart(plr.Character.HumanoidRootPart)
+    if PushCounter == true then
+        local bv = Instance.new("BodyVelocity", plr.Character.HumanoidRootPart)
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Unit * -1000
+      elseif FlingCounter == true then
+        local bav = Instance.new("BodyAngularVelocity", plr.Character.HumanoidRootPart)
+        bav.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bav.AngularVelocity = Vector3.new(1e9, 1e9, 1e9)
+        game.Debris:AddItem(bav, task.wait())
+      elseif KillCounter == true then
+        plr.Character:BreakJoints()
+      elseif GlitchCounter == true then
+        plr.Character.HumanoidRootPart.Position += Vector3.new(10000, 10000, 10000)
+    end
+    letPart(plr.Character.HumanoidRootPart)
+  end
+end)
+repeat task.wait() until euhj == false con10:Disconnect()
+  end
+})
+
+
+
+Tabs.Special:AddButton({
+  Title = "Explode black hole bomb in area",
+  Description = "It works, but poorly. Double-click quickly to make it work. For your convenience, a tool appears in your inventory",
+  Callback = function()
+     local tool = Instance.new("Tool", game.Players.LocalPlayer:WaitForChild("Backpack"))
+tool.Name = "Spawn bomb"
+tool.RequiresHandle = false
+
+game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+tool.Activated:Connect(function()
+  local mouse = game.Players.LocalPlayer:GetMouse()
+  local pos = mouse.Hit.Position
+  
+  game.ReplicatedStorage.MenuToys.SpawnToyRemoteFunction:InvokeServer("BombDarkMatter", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame, Vector3.new(0, 0, 0))
+  repeat task.wait() until workspace:FindFirstChild(game.Players.LocalPlayer.Name .. "SpawnedInToys"):FindFirstChild("BombDarkMatter") and workspace:FindFirstChild(game.Players.LocalPlayer.Name .. "SpawnedInToys").BombDarkMatter:FindFirstChild("Pyramid")
+local bomb = Workspace:FindFirstChild(game.Players.LocalPlayer.Name .. "SpawnedInToys").BombDarkMatter
+  repeat task.wait() game.ReplicatedStorage.GrabEvents.SetNetworkOwner:FireServer(bomb.Pyramid, bomb.Pyramid.CFrame) until isnetworkowner(bomb.Pyramid)
+    task.wait(wait())
+  local bv = Instance.new("BodyVelocity", bomb.Pyramid)
+  bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+  bv.Velocity = (mouse.Hit.Position - bomb.Pyramid.Position).Unit * 500
+  game:GetService("ReplicatedStorage"):WaitForChild("BombEvents"):WaitForChild("BombExplode"):FireServer({
+     Radius = 10, TimeLength = 0.5, DestroysModel = true, ImpactSpeed = 20, ExplodesByFire = true, MaxForcePerStudSquared = -100, Model = bomb, Type = "Implode", ExplodesByPointy = false, Hitbox = bomb:FindFirstChild("PartHitDetector"), PositionPart = bomb:FindFirstChild("PartHitDetector")
+    }, pos)
+end)
+  end
+})
