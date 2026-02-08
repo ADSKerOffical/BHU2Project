@@ -1,0 +1,154 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/ionlyusegithubformcmods/1-Line-Scripts/main/Mobile%20Friendly%20Orion')))()
+
+local Window = OrionLib:MakeWindow({Name = "Budgie Hub | Furry infection", HidePremium = true, IntroEnabled = false, SaveConfig = false, ConfigFolder = "OrionTest"})
+
+local Tab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+game.StarterGui:SetCore("ResetButtonCallback", true)
+local function isinfected(): bool
+  return game.Players.LocalPlayer.Team == game.Teams["Infected"]
+end
+
+local function roundnum(num: number)
+  return string.format("%.1f", num)
+end
+
+local function getredwall()
+ for _, part in next, workspace:GetDescendants() do
+    if part:IsA("BasePart") and part.Name == "Part" and part:FindFirstChild("TouchInterest") and part.Transparency > 0.4 then
+      return part
+    end
+  end
+end
+
+local Section = Tab:AddSection({
+  Name = "Humans"
+})
+
+Tab:AddToggle({
+ Name = "Auto collect money",
+ Default = false,
+ Callback = function(Value)
+  hik = Value
+      while hik and task.wait(.25) do
+       if isinfected() then return end
+         for _, part in next, workspace:GetDescendants() do
+            if part:IsA("BasePart") and part.Name:lower() == "moneystack" then
+               firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, part, 0)
+            end
+         end
+      end
+   end    
+})
+
+local loop = 0
+Tab:AddToggle({
+ Name = "Radio lag",
+ Default = false,
+ Callback = function(Value)
+  hgye = Value
+   if hgye == true and game.Players.LocalPlayer.PlayerGui:FindFirstChild("BubbleChat") then
+     game.Players.LocalPlayer.PlayerGui.BubbleChat:Destroy()
+   end
+
+while hgye do 
+loop +=1
+
+if not isinfected() and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Name == "Radio" then
+  game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):Activate()
+end
+
+ if loop >= (game:GetService("Stats").Workspace.Heartbeat:GetValue() + 10) then
+task.wait()
+loop = 0
+  end
+ end
+   end    
+})
+
+Tab:AddButton({
+ Name = "Get bat",
+ Callback = function()
+      local function hasbat()
+  return game.Players.LocalPlayer.Character:FindFirstChild("Bat") or game.Players.LocalPlayer.Backpack:FindFirstChild("Bat")
+end
+
+if not hasbat() and not isinfected() then
+for _, part in next, workspace:GetDescendants() do
+  if part:IsA("BasePart") and part.Name == "BatModel" and part:FindFirstChild("interact") and part.interact:FindFirstChildOfClass("ProximityPrompt") then
+    local saved = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    local timeout = os.clock()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame
+       task.wait(.1)
+      fireproximityprompt(part.interact:FindFirstChildOfClass("ProximityPrompt"), 0)
+       repeat task.wait(.1) until hasbat() or os.clock() - timeout >= 4
+       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = saved
+    end
+  end
+end
+   end
+})
+
+Tab:AddToggle({
+ Name = "Ignore infection puddles",
+ Default = false,
+ Callback = function(Value)
+       for _, part in next, workspace:GetDescendants() do
+          if part:IsA("BasePart") and part:FindFirstChild("TouchInterest") and part.Parent.Name == "Model" then
+            part.Transparency = Value and 0.7 or 0
+            part.CanCollide = not Value
+            part.CanTouch = not Value
+            part.CanQuery = not Value
+          end
+       end
+   end    
+})
+
+local Section = Tab:AddSection({
+  Name = "Infected"
+})
+
+Tab:AddToggle({
+ Name = "Ignore red wall",
+ Default = false,
+ Callback = function(Value)
+  if not isinfected() then return end
+      for _, part in next, workspace:GetDescendants() do
+        if part:IsA("BasePart") and part.Name == "Part" and part:FindFirstChild("TouchInterest") and part.Transparency > 0.4 then
+           part.CanTouch = not Value
+           part.CanQuery = not Value
+        end
+      end
+   end    
+})
+
+Tab:AddToggle({
+ Name = "Auto grab",
+ Default = false,
+ Callback = function(Value)
+        local function hasanim()
+  for _, animation in ipairs(game.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks()) do
+    if animation.Animation.AnimationId == "rbxassetid://10679373472" then
+      return true
+    end
+  end
+  return false
+end
+kois = Value
+while kois and task.wait() do
+ for _, part in next, workspace:GetPartBoundsInRadius(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, 10) do
+  if not part:IsDescendantOf(game.Players.LocalPlayer.Character) and game.Players:GetPlayerFromCharacter(part.Parent) then
+    local plr = game.Players:GetPlayerFromCharacter(part.Parent)
+    if game.Players.LocalPlayer.Team == game.Teams["Infected"] and plr.Team == game.Teams["Humans"] and plr.Character:FindFirstChild("HumanoidRootPart") and not hasanim() then
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame
+      game:GetService("Players").LocalPlayer.Character.Actions.Act:FireServer("Attack")
+    end
+  end
+ end
+end
+   end    
+})
