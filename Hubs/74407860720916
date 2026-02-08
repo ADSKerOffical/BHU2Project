@@ -1,0 +1,32 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Bridge to Brainrot", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+  local platform = Instance.new("Part", workspace)
+  platform.Transparency = 1
+  platform.Size = Vector3.new(2048, 1, 2048)
+  platform.Anchored = true
+  
+tab.newToggle("Platform", "You cant fall into the void", false, function(toggleState)
+  jeh = toggleState
+  while jeh and task.wait() do
+    platform.Position = Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X, -8, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z)
+    platform.CanCollide = jeh
+    platform.Transparency = (jeh == true and 0.7 or 1)
+  end
+end)
+
+tab.newToggle("Instant grab", "You immediately take the brainrot to your base", true, function(toggleState)
+  jwh = toggleState
+  local ahg = game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(promp)
+  if promp.Name == "GrabPrompt" then
+    fireproximityprompt(promp, 0)
+    task.defer(function()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Workspace.Bases:FindFirstChild("Base" .. tostring(game.Players.LocalPlayer.BaseNum.Value)).CollectZone.CFrame * CFrame.new(0, -90, 0)
+    end)
+  end
+end)
+  task.spawn(function() repeat task.wait() until jwh == false ahg:Disconnect() end)
+end)
