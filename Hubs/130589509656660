@@ -1,0 +1,98 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Build & Steal time", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Infinity points", "Gives you 2^63 Points (int value limit)", function()
+    game:GetService("Players").LocalPlayer.PlayerGui.bank.RemoteEvent:FireServer(-9223372036854775100, "deposite")
+end)
+
+tab.newToggle("Kill all by sword", "Kills everyone with a sword", false, function(Value)
+aaa = Value
+	  while aaa and game:GetService("RunService").RenderStepped:Wait() do
+    pcall(function()
+        local p = game.Players:GetPlayers()
+        for i = 2, #p do local v = p[i].Character
+            local LP = game.Players.LocalPlayer
+            local tool = LP.Character and LP.Character:FindFirstChildOfClass("Tool")
+            if tool then
+                tool:Activate()
+                for i, v in next, v:GetChildren() do
+                    if v:IsA("BasePart") then
+                        for _, part in next, tool:GetDescendants() do
+                            if part:IsA("BasePart") and part:FindFirstChild("TouchInterest") then
+                                firetouchinterest(part, v, 0)
+                                firetouchinterest(part, v, 1)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+end)
+
+local reps = 100
+
+tab.newButton("Spam bombs", "Gives and activating bomb", function()
+   for _ = 1, reps do
+local args = {
+ game:GetService("ReplicatedStorage"):WaitForChild("gear"):WaitForChild("FuseBomb")
+}
+game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("shop"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+   end
+   
+   for _, tool in next, game.Players.LocalPlayer.Backpack:GetDescendants() do
+  if tool:IsA("Tool") and tool.Name == "FuseBomb" then
+    tool.Parent = game.Players.LocalPlayer.Character
+    tool:Activate()
+  end
+end
+end)
+
+tab.newButton("Spam subspace tripmines", "Gives and activating subspace tripmines", function()
+    for _ = 1, reps do
+local args = {
+ game:GetService("ReplicatedStorage"):WaitForChild("gear"):WaitForChild("SubspaceTripmine")
+}
+game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("shop"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+   end
+   
+   for _, tool in next, game.Players.LocalPlayer.Backpack:GetDescendants() do
+  if tool:IsA("Tool") and tool.Name == "SubspaceTripmine" then
+    tool.Parent = game.Players.LocalPlayer.Character
+    tool:Activate()
+  end
+end
+end)
+
+tab.newButton("Spam bugles", "Gives and activating bugles", function()
+    for _ = 1, reps do
+local args = {
+ game:GetService("ReplicatedStorage"):WaitForChild("gear"):WaitForChild("Bugle")
+}
+game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("shop"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+   end
+   
+   for _, tool in next, game.Players.LocalPlayer.Backpack:GetDescendants() do
+  if tool:IsA("Tool") and tool.Name == "Bugle" then
+    tool.Parent = game.Players.LocalPlayer.Character
+    tool:Activate()
+  end
+end
+end)
+
+tab.newButton("Activate all bugles", "Activating all bugles in your backpack", function()
+    for _, tool in next, game.Players.LocalPlayer.Backpack:GetDescendants() do
+  if tool:IsA("Tool") and tool.Name == "Bugle" then
+    tool.Parent = game.Players.LocalPlayer.Character
+    tool:Activate()
+  end
+end
+end)
+
+tab.newInput("Set repeats", "How many times should you spam", function(text)
+    reps = text
+end)
