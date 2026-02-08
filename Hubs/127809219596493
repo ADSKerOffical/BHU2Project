@@ -1,0 +1,32 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Escape tsunami for femboys", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "ImageIdHere")
+
+tab.newToggle("Ignore the tsunami", "You don\'t die in tsunami", false, function(toggleState)
+   yun = toggleState
+   while yun and task.wait() do
+     for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+       if part:IsA("BasePart") then
+         part.CanTouch = not yun
+         part.CanQuery = not yun
+       end
+     end
+   end
+end)
+
+tab.newButton("Open all win walls", "Opening all win walls", function()
+    for _, wall in next, Workspace.Wins:GetChildren() do
+      if wall:IsA("BasePart") then
+        wall.CanCollide = false
+        if wall:FindFirstChildOfClass("SurfaceGui") then
+          wall.SurfaceGui.TextLabel.Text = "Opened by Budgie Hub"
+        end
+      end
+    end
+end)
+
+tab.newInput("Set speed", "Sets the speed you want", function(text)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(text)
+end)
