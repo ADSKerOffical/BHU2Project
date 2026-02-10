@@ -1,0 +1,52 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | GUNS VS FNAF", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Modify gun", "Your weapon becomes divinely powerful", function()
+ for _, gun in next, game.Players.LocalPlayer.Character:GetChildren() do
+  if gun:IsA("Tool") and gun:FindFirstChild("Setting") then
+    local settings = require(gun.Setting)
+    settings.FireRate = 0
+    settings.BulletSpeed = 1000
+    settings.Auto = true
+    settings.BaseDamage = math.huge
+  end
+ end
+ 
+ for _, gun in next, game.Players.LocalPlayer.Backpack:GetChildren() do
+  if gun:IsA("Tool") and gun:FindFirstChild("Setting") then
+    local settings = require(gun.Setting)
+    settings.FireRate = 0
+    settings.BulletSpeed = 1000
+    settings.Auto = true
+    settings.BaseDamage = math.huge
+  end
+ end
+end)
+
+tab.newButton("Remove walls", "Removes walls that require money to open", function()
+    pcall(function() Workspace.levelWalls:Destroy() end)
+    pcall(function() Workspace.level10.killsWall:Destroy() end)
+    pcall(function() Workspace.lobby.killDoors:Destroy() end)
+    pcall(function() Workspace.lobby.vipDoor end)
+end)
+
+tab.newButton("Kill all", "Kill all players with your weapon", function()
+    local tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") or game.Players.LocalPlayer.Backpack:FindFirstChildOfClass("Tool")
+    for _, player in next, game.Players:GetPlayers() do
+      if player ~= game.Players.LocalPlayer then
+         local args = {
+ (player.Character or player.CharacterAdded:Wait()):WaitForChild("Humanoid"),
+ (player.Character or player.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart"),
+ 1/0,
+ vector.create(0.1730172336101532, -0.02223476953804493, -0.9846677184104919),
+ 0,
+ 0,
+ false
+}
+tool.GunScript_Server.InflictTarget:FireServer(unpack(args))
+      end
+    end
+end)
