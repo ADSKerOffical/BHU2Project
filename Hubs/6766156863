@@ -1,0 +1,28 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Strong man simulator", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newToggle("Massless grab", "Your weight will always be very light", false, function(toggleState)
+   local behe = toggleState
+   local con1 = game.Workspace.PlayerDraggables:FindFirstChild(tostring(game.Players.LocalPlayer.UserId)).DescendantAdded:Connect(function(weight)
+    if weight:IsA("BasePart") then
+      weight.CustomPhysicalProperties = PhysicalProperties.new(0, 100, 1, 1, 1)
+    end
+  end)
+  task.spawn(function() repeat task.wait() until behe == false con1:Disconnect() end)
+end)
+
+tab.newToggle("Instant goal", "The weight you grab will instantly be at the finish line", false, function(toggleState)
+    ehvh = toggleState
+    local con2 = game.Workspace.PlayerDraggables:FindFirstChild(tostring(game.Players.LocalPlayer.UserId)).DescendantAdded:Connect(function(weight)
+     if weight:IsA("BasePart") then
+      local hp = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+      weight.CFrame = workspace.Areas.Area3_Food.Goal.CFrame
+        weight.Destroying:Wait()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hp
+    end
+  end)
+  task.spawn(function() repeat task.wait() until ehvh == false con2:Disconnect() end)
+end)
