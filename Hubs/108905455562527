@@ -1,0 +1,13 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | +1 speed bike escape", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Remove tsunamies", "Removes all tsunamies", function()
+    Workspace.Map.Tsunamis:Destroy()
+end)
+
+tab.newButton("Teleport to the last stage", "You get 7000 wins", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Workspace.Map.WinStages["Stage 13"].Return.Part.CFrame
+end)
