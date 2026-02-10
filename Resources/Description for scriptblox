@@ -1,0 +1,23 @@
+Budgie Hub Universal 2 is here.
+
+Sorry about the previous version of the script — there was a bug with the Orion library that prevented interacting with the menu when you were playing on a PC. Also, many functions in the "Game" tab didn't work because I rushed it and pasted random scripts I found
+But after a year I decided why not make a second version of the hub with fixes and switch to the Fluent library, since from your feedback I realized the first one turned out pretty bad. In the Main tab I added a TextBox to search for other functions and sections, but it work in progress.
+I decided not to make a separate tab for game-specific scripts, so the script detects which place you're playing and will offer to run a script made specifically for that game, run the universal script, or not run anything at all. I'll personally create the scripts for those modes, but I should warn you I probably won't fix them if they have bugs or maybe I will, but no promises. It’s a hard to write scripts on a phone when working alone.
+Here's the list of games (the used library and a link to the place are shown in parentheses):
+
+random tool (https://roblox.com/games/9879422661, Fluent)
+Doge head escape (https://roblox.com/games/8831256282, Orion)
+Survive in area 51 (https://roblox.com/games/2214661900, Orion)
+Fling things and peoples FTAP (https://roblox.com/games/6961824067, Fluent)
+Infectious smile (https://roblox.com/games/5985232436, DrRay)
+Bendy and the ink machine (https://roblox.com/games/4850588087, Orion)
+Bridge to Brainrot (https://roblox.com/games/74407860720916, DrRay)
+Escape tsunami for femboys (https://roblox.com/games/127809219596493, DrRay)
+Furry infection (https://roblox.com/games/10679239752, Orion)
+Build & Steal time (https://roblox.com/games/130589509656660, DrRay)
+Cool Rarities (https://roblox.com/games/13020029200, Pop UI)
++1 Speed Bike Tsunami Escape (https://roblox.com/games/108905455562527, DrRay)
+:) (https://roblox.com/games/98874498156203, Orion)
+Superpower simulator: Chakra (https://roblox.com/games/11696357981, Orion)
+KJ battlegrounds (https://roblox.com/games/17750416316, Orion)
+Push the dummies into sparta hole (https://roblox.com/games/76703229, Orion)
