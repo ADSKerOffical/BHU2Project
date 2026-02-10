@@ -4,12 +4,26 @@ BudgieHub:ToggleTransparency(false)
 local Window = BudgieHub:CreateWindow({
     Title = "Budgie Hub Universal 2 Alpha",
     SubTitle = "by ADSKer",
-    TabWidth = 160,
+    TabWidth = 160, -- 160
     Size = UDim2.fromOffset(580, 460),
     Acrylic = false,
     Theme = "Darker",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
+
+for _, label in next, Window.Root:GetDescendants() do
+  if label:IsA("TextLabel") and label.Text == "Budgie Hub Universal 2 Alpha" then
+    local Icon = Instance.new("ImageLabel", label)
+    Icon.Size = UDim2.new(0.2, 0, 0.2, 0)
+    Icon.Image = "rbxassetid://126371842393375"
+    Icon.BackgroundColor3 = Color3.new(0.075, 0.075, 0.075)
+    Icon.BorderSizePixel = 0
+    Icon.Position = UDim2.new(1, 0, 0, 0)
+    
+    Icon_Corner = Instance.new("UICorner", Icon)
+    Icon_Corner.CornerRadius = UDim.new(0.2, 0)
+  end
+end
 
 local BHU2_Icon = Instance.new("ImageButton", BHU2 or Instance.new("ScreenGui", game.CoreGui))
 BHU2_Icon.Size = UDim2.new(0, math.floor(math.max(32, math.min(game.Players.LocalPlayer:GetMouse().ViewSizeX, game.Players.LocalPlayer:GetMouse().ViewSizeY) * 0.15)), 0, math.floor(math.max(32, math.min(game.Players.LocalPlayer:GetMouse().ViewSizeX, game.Players.LocalPlayer:GetMouse().ViewSizeY) * 0.15)))
@@ -61,11 +75,13 @@ local search
 for _, w in next, Window.Root:GetDescendants() do
   if w:IsA("TextLabel") and w.Text == "Tool Control" then
      search = Instance.new("TextBox", w.Parent.Parent)
+     search.Name = "Search"
      search.Size = UDim2.new(1, 0, 0, 50)
      search.Position = UDim2.new(0.4, 0, 0.2, 0)
      search.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
      search.Text = ""
      search.TextSize *= 1.35
+     search.TextWrapped = true
      search.BackgroundTransparency = 0.2
      search.TextColor3 = Color3.new(1, 1, 1)
      search.PlaceholderColor3 = Color3.new(0.75, 0.75, 0.75)
@@ -199,6 +215,28 @@ ToolControl:AddToggle("Grip", {
 end
   end
     end
+})
+
+ToolControl:AddToggle("MyToggle", {
+  Title = "Tool: Massles grip",
+  Description = "All parts in the instrument become phantom, thus not moving you",
+  Default = false,
+  Callback = function(Value)
+     nsj = Value
+while nsj and task.wait() do
+  for _, tool in next, (game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):GetChildren() do
+    if tool:IsA("Tool") then
+      for _, part in tool:GetDescendants() do
+        if part:IsA("BasePart") then
+          part.Massless = not nsj
+          part.CanCollide = not nsj
+          part.Anchored = false
+        end
+      end
+    end
+  end
+end
+  end
 })
 
 local TouchControl = Tabs.Main:AddSection("TouchTransmitter/TouchInterest control")
@@ -802,6 +840,184 @@ end
     end
 })
 
+local SoundControl = Tabs.Main:AddSection("Sound Control")
+
+SoundControl:AddButton({
+    Title = "Sound: Reset ambient reverb",
+    Description = "Reset Ambient Reverb (Removes global echo or something like that if it exists)",
+    Callback = function()
+        game:GetService("SoundService"):ResetPropertyToDefault("AmbientReverb")
+    end
+})
+
+local TeleportControl = Tabs.Main:AddSection("Place Teleport Control")
+
+TeleportControl:AddButton({
+  Title = "Teleport: Rejoin",
+  Description = "Teleports you to the server you are currently on",
+  Callback = function()
+    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+  end
+})
+
+TeleportControl:AddButton({
+  Title = "Teleport: Server hop",
+  Description = "Teleports you to a random server",
+  Callback = function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId)
+  end
+})
+
+TeleportControl:AddButton({
+  Title = "Teleport: Smallest server",
+  Description = "Teleports you to the server with the smallest population",
+  Callback = function()
+    local servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")).data
+  if #servers > 0 then
+    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, servers[1].id, game.Players.LocalPlayer)
+  end
+  end
+})
+
+TeleportControl:AddButton({
+  Title = "Teleport: Biggest server",
+  Description = "Teleports you to the server with the largest population",
+  Callback = function()
+    local servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Desc&limit=100")).data
+  if #servers > 0 then
+    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, servers[1].id, game.Players.LocalPlayer)
+  end
+  end
+})
+
+
+
+Tabs.Finders:AddButton({
+  Title = "Dex explorer",
+  Description = "A handy tool that imitates a roblox studio explorer",
+  Callback = function()
+     loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+  end
+})
+
+Tabs.Finders:AddButton({
+  Title = "Tool gun",
+  Description = "My special tool with special modes. 1 mod copies the full name of the object you clicked on, 2 displays in the console the value of all parameters of the object you clicked on, 3 mod gets all the descendants of the object you clicked on and there are other modes. You won't be able to click on an object if part.CanQuery = false",
+  Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/Tool/refs/heads/main/Tool%20Gun"))()
+  end
+})
+
+Tabs.Finders:AddButton({
+  Title = "Remote spy",
+  Description = "Shows all RemoteEvent and RemoteFunction in a special menu which you run",
+  Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua"))()
+  end
+})
+
+Tabs.Finders:AddButton({
+  Title = "Animation logger",
+  Description = "Receives ContentId animations that you play",
+  Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/Animation-Logger/main/Gui"))()
+  end
+})
+
+Tabs.Finders:AddButton({
+  Title = "Audio logger",
+  Description = "Get information about sounds",
+  Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHUOriginal/refs/heads/main/Guis/AudioLoggerV2"))()
+  end
+})
+
+Tabs.Finders:AddButton({
+  Title = "Subplace finder",
+  Description = "Gets all places (even hidden ones) from the creator of the current place. If you have a delta and the \"Verified teleports\" feature is enabled then you won\'t be able to teleport",
+  Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHUOriginal/refs/heads/main/Guis/SubplaceFinder"))()
+  end
+})
+
+Tabs.Finders:AddButton({
+  Title = "Http spy",
+  Description = "Get all links that are launched on your client",
+  Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Bebo-Mods/Scripts/refs/heads/master/HttpsSpy.lua"))()
+  end
+})
+
+local Section = Tabs.Finders:AddSection("Finders")
+
+Tabs.Finders:AddButton({
+   Title = "Open console",
+   Description = "Opening the console window. Anti console scripts can be detect this",
+   Callback = function()
+     game:GetService("StarterGui"):SetCore("DevConsoleVisible", true)
+   end
+})
+
+Tabs.Finders:AddButton({
+  Title = "Copy self position",
+  Description = "Gets your HumanoidRootPart position",
+  Callback = function()
+    setclipboard(tostring(Vector3.new(math.floor(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.X), math.floor(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Y), math.floor(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Z))))
+  end
+})
+
+Tabs.Finders:AddButton({
+  Title = "Copy place info",
+  Description = "Gets information about this place",
+  Callback = function()
+    setclipboard(`Place Id: {game.PlaceId}\nGame Id: {game.GameId}\nCreator Id: {game.CreatorId}`)
+  end
+})
+
+Tabs.Finders:AddButton({
+   Title = "Print all local player value bases",
+   Description = "Print all local player, character and humanoid value bases",
+   Callback = function()
+     for _, val in next, game.Players.LocalPlayer:GetDescendants() do
+       if val:IsA("ValueBase") then
+         print(val.ClassName, val:GetFullName(), val.Value)
+       end
+     end
+     
+     for _, val in next, game.Players.LocalPlayer.Character:GetDescendants() do
+       if val:IsA("ValueBase") then
+         print(val.ClassName, val:GetFullName(), val.Value)
+       end
+     end
+   end
+})
+
+Tabs.Finders:AddButton({
+   Title = "Print all local player attributes",
+   Description = "Print all local player, character, humanoid attributes",
+   Callback = function()
+     for atname, atval in next, game.Players.LocalPlayer:GetAttributes() do
+       print(game.Players.LocalPlayer:GetFullName(), atname, atval)
+     end
+     
+     for _, desc in next, game.Players.LocalPlayer:GetDescendants() do
+       for atname, atval in next, desc:GetAttributes() do
+         print(desc:GetFullName(), atname, atval)
+       end
+     end
+     
+     for atname, atval in next, game.Players.LocalPlayer.Character:GetAttributes() do
+       print(game.Players.LocalPlayer:GetFullName(), atname, atval)
+     end
+     
+     for _, desc in next, game.Players.LocalPlayer.Character:GetDescendants() do
+       for atname, atval in next, desc:GetAttributes() do
+         print(desc:GetFullName(), atname, atval)
+       end
+     end
+   end
+})
+
 
 
 local Section = Tabs.Extra:AddSection("Tools")
@@ -896,6 +1112,15 @@ Tabs.Settings:AddToggle("Anti afk", {
     for _, con in next, getconnections(game.Players.LocalPlayer.Idled) do
       if Value == true then con:Disable() else con:Enable() end
     end
+  end
+})
+
+Tabs.Settings:AddToggle("Defense", {
+  Title = "Disable gameplay paused",
+  Description = "Removes the menu that stops gameplay",
+  Default = false,
+  Callback = function(Value)
+    game:GetService("GuiService"):SetGameplayPausedNotificationEnabled(not Value)
   end
 })
 
