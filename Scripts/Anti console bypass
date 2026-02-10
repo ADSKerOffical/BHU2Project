@@ -1,0 +1,9 @@
+local hook; hook = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+  if not checkcaller() and self == game.StarterGui and getnamecallmethod() == "SetCore" then
+    local args = {...}
+    if #args > 0 and args[1] == "DevConsoleVisible" then
+      return nil
+    end
+  end
+  return hook(self, ...)
+end))
