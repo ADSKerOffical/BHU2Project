@@ -1,0 +1,11 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub | Find Floppas")
+
+Tab:Button("Find all", function()
+  for _, kw in Workspace.Floppas:GetChildren() do
+    if kw:IsA("BasePart") then
+      firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, kw, 0)
+    end
+  end
+end)
