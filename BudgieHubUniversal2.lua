@@ -11,19 +11,11 @@ local Window = BudgieHub:CreateWindow({
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
-for _, label in next, Window.Root:GetDescendants() do
-  if label:IsA("TextLabel") and label.Text == "Budgie Hub Universal 2 Alpha" then
-    local Icon = Instance.new("ImageLabel", label)
-    Icon.Size = UDim2.new(0.2, 0, 0.2, 0)
-    Icon.Image = "rbxassetid://126371842393375"
-    Icon.BackgroundColor3 = Color3.new(0.075, 0.075, 0.075)
-    Icon.BorderSizePixel = 0
-    Icon.Position = UDim2.new(1, 0, 0, 0)
-    
-    Icon_Corner = Instance.new("UICorner", Icon)
-    Icon_Corner.CornerRadius = UDim.new(0.2, 0)
+  for i, v in next, getgc(true) do
+   if typeof(v) == "table" and rawget(v, "Detected") and typeof(rawget(v, "Detected")) == "function" then
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Scripts/Adonis%20Bypass"))()
+    end
   end
-end
 
 local BHU2_Icon = Instance.new("ImageButton", BHU2 or Instance.new("ScreenGui", game.CoreGui))
 BHU2_Icon.Size = UDim2.new(0, math.floor(math.max(32, math.min(game.Players.LocalPlayer:GetMouse().ViewSizeX, game.Players.LocalPlayer:GetMouse().ViewSizeY) * 0.15)), 0, math.floor(math.max(32, math.min(game.Players.LocalPlayer:GetMouse().ViewSizeX, game.Players.LocalPlayer:GetMouse().ViewSizeY) * 0.15)))
@@ -67,6 +59,7 @@ local Tabs = {
     Finders = Window:AddTab({Title = "Dev Tools", Icon = "rbxassetid://12392897830"}),
     Extra = Window:AddTab({Title = "Extra", Icon = "rbxassetid://71023809654860"}),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
+    Creator = Window:AddTab({Title = "Creator", Icon = "https://www.roblox.com/headshot-thumbnail/image?userId=4636825706&width=420&height=420&format=png"})
 }
 
 local ToolControl = Tabs.Main:AddSection("Tool Control")
@@ -703,18 +696,23 @@ local AnimationControl = Tabs.Main:AddSection("Animation Control")
 local Dropdown = AnimationControl:AddDropdown("Dropdown", {
     Title = "Animation: Play animation R15",
     Description = "Play animations which I found. Animation",
-    Values = {"Sinister dance", "Take L", "Rampage", "Gangam style"},
+    Values = {"Sinister dance", "Take L", "Rampage", "Gangam style", "Billy bounce", "Cat sinister dance", "Orange justice", "Shake that thang"},
     Multi = false,
     Default = "...",
 })
 
 Dropdown:OnChanged(function(Value)
   local as, res = pcall(function()
+    if Value == "..." then return end
     local tabl = {
       ["Sinister dance"] = "rbxassetid://137581268977122",
       ["Take L"] = "rbxassetid://95656304023751",
       ["Rampage"] = "rbxassetid://113913115257328",
-      ["Gangam style"] = "rbxassetid://129764254213842"
+      ["Gangam style"] = "rbxassetid://129764254213842",
+      ["Billy bounce"] = "rbxassetid://119280135350752",
+      ["Cat sinister dance"] = "rbxassetid://119554409715043",
+      ["Orange justice"] = "rbxassetid://95127716920692",
+      ["Shake that thang"] = "rbxassetid://118364690209655"
     }
     for _, anim in next, game.Players.LocalPlayer.Character.Humanoid:GetPlayingAnimationTracks() do
       anim:Stop()
@@ -840,6 +838,52 @@ end
     end
 })
 
+local LightControl = Tabs.Main:AddSection("Light control")
+
+local Dropdown = LightControl:AddDropdown("Dropdown", {
+    Title = "Light: Set time",
+    Description = "Day or night. Light",
+    Values = {"Day", "Night"},
+    Multi = false,
+    Default = "...",
+})
+
+Dropdown:OnChanged(function(Value)
+  pcall(function()
+    if Value == "..." then return end
+    
+    if Value == "Day" then
+      game:GetService("Lighting").TimeOfDay = "12:00:00"
+    elseif Value == "Night" then
+      game:GetService("Lighting").TimeOfDay = "23:00:00"
+    end
+  end)
+end)
+
+LightControl:AddButton({
+  Title = "Light: Remove all lighting effects",
+  Description = "Removes all lighting effects including the sky. You won\'t be able to return it",
+  Callback = function()
+     game.Lighting:ClearAllChildren()
+  end
+})
+
+LightControl:AddButton({
+  Title = "Light: Fullbright",
+  Description = "Illuminates everything forever, but does not remove the lighting effects. Fullbright",
+  Callback = function()
+     game.Lighting.Changed:Connect(function()
+  game.Lighting.Ambient = Color3.new(1, 1, 1)
+  game.Lighting.ColorShift_Bottom = Color3.new(1, 1, 1)
+  game.Lighting.ColorShift_Top = Color3.new(1, 1, 1)
+  game.Lighting.GlobalShadows = false
+  game.Lighting.FogEnd = math.huge
+  game.Lighting.FogStart = math.huge
+end)
+  game.Lighting.TimeOfDay = "12:34:43"
+  end
+})
+
 local SoundControl = Tabs.Main:AddSection("Sound Control")
 
 SoundControl:AddButton({
@@ -888,6 +932,101 @@ TeleportControl:AddButton({
     game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, servers[1].id, game.Players.LocalPlayer)
   end
   end
+})
+
+local CarControl = Tabs.Main:AddSection("Car control")
+
+local Dropdown = CarControl:AddDropdown("Dropdown", {
+    Title = "Car: Send into the void",
+    Description = "Current car or all cars",
+    Values = {"Current", "All"},
+    Multi = false,
+    Default = "...",
+})
+
+Dropdown:OnChanged(function(Value)
+  pcall(function()
+    local function FindCar(instance)
+  local current = instance.Parent
+  
+  local function FindPart(inst: Instance, partname: string)
+    for _, part in next, inst:GetChildren() do
+      if part:IsA("BasePart") and string.find(string.lower(part.Name), partname) then
+        return part
+      end
+    end
+    return nil
+  end
+
+  while current ~= nil and current ~= workspace and current ~= game do
+    if current:IsA("Model") and (current.Name:lower():find("car") or current.Name:lower():find("vehicle") or FindPart(current, "wheel")) then
+      return current
+    end
+    current = current.Parent
+  end
+
+  return nil
+end
+
+    if Value == "Current" then
+     local posit = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 2, 0)
+FindCar(game.Players.LocalPlayer.Character.Humanoid.SeatPart):PivotTo(CFrame.new(0, workspace.FallenPartsDestroyHeight + 10, 0))
+game.Players.LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+  task.wait(wait())
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = posit
+    else
+   local posit = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 2, 0)
+for _, seat in next, game.Workspace:GetDescendants() do
+  if seat:IsA("VehicleSeat") and seat.Occupant == nil and FindCar(seat) and seat.Disabled == false then
+    game.Players.LocalPlayer.SimulationRadius = math.huge
+    repeat task.wait() game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = seat.CFrame until seat.Occupant == game.Players.LocalPlayer.Character.Humanoid
+    repeat task.wait() FindCar(game.Players.LocalPlayer.Character.Humanoid.SeatPart):PivotTo(CFrame.new(0, workspace.FallenPartsDestroyHeight + 10, 0)) until FindCar(game.Players.LocalPlayer.Character.Humanoid.SeatPart):GetPivot() == CFrame.new(0, workspace.FallenPartsDestroyHeight + 10, 0)
+      task.wait(wait())
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+    repeat task.wait() game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = posit until game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame == posit
+  end
+end
+    end
+  end)
+end)
+
+CarControl:AddButton({
+    Title = "Car: Grab all cars",
+    Description = "Grabs all vehicles to you. May contain bugs",
+    Callback = function()
+        local function FindCar(instance)
+  local current = instance.Parent
+  
+  local function FindPart(inst: Instance, partname: string)
+    for _, part in next, inst:GetChildren() do
+      if part:IsA("BasePart") and string.find(string.lower(part.Name), partname) then
+        return part
+      end
+    end
+    return nil
+  end
+
+  while current ~= nil and current ~= workspace and current ~= game do
+    if current:IsA("Model") and (current.Name:lower():find("car") or current.Name:lower():find("vehicle") or FindPart(current, "wheel")) then
+      return current
+    end
+    current = current.Parent
+  end
+
+  return nil
+end
+
+local posit = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 2, 0)
+for _, seat in next, game.Workspace:GetDescendants() do
+  if seat:IsA("VehicleSeat") and seat.Occupant == nil and FindCar(seat) and seat.Disabled == false then
+    game.Players.LocalPlayer.SimulationRadius = math.huge
+    repeat task.wait() game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = seat.CFrame until seat.Occupant == game.Players.LocalPlayer.Character.Humanoid
+    repeat task.wait() FindCar(game.Players.LocalPlayer.Character.Humanoid.SeatPart):PivotTo(posit) until FindCar(game.Players.LocalPlayer.Character.Humanoid.SeatPart):GetPivot() == posit
+      task.wait(wait())
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+  end
+end
+    end
 })
 
 
@@ -972,6 +1111,71 @@ Tabs.Finders:AddButton({
   Callback = function()
     setclipboard(`Place Id: {game.PlaceId}\nGame Id: {game.GameId}\nCreator Id: {game.CreatorId}`)
   end
+})
+
+local AntiConsoleBypass = false
+local suc, res = pcall(function()
+  local hook; hook = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+    if not checkcaller() and self == game.StarterGui and getnamecallmethod() == "SetCore" then
+      if AntiConsoleBypass == false then return hook(self, ...) end
+      local args = {...}
+      if #args > 0 and args[1] == "DevConsoleVisible" then
+        return nil
+      end
+    end
+    return hook(self, ...)
+  end))
+end)
+
+if not suc then
+  BudgieHub:Notify({
+        Title = "Budgie Hub Notification",
+        Content = "Error",
+        SubContent = "Functions for console\'s anti-detection is missing or something went wrong. Anti console bypass won\'t work\nError: ".. res,
+        Duration = 10
+  })
+end
+
+Tabs.Finders:AddToggle("MyToggle", {
+  Title = "Anti console bypass",
+  Description = "Anti-detect scripts don\'t see that you\'ve opened the console. This script uses hookmetamethod, checkcaller, getnamecallmethod and newcclosure so you must have these exploit functions so that you can use this",
+  Default = false,
+  Callback = function(Value)
+    AntiConsoleBypass = Value
+  end
+})
+
+Tabs.Finders:AddButton({
+   Title = "Print all local scripts",
+   Description = "Outputs all local scripts to the console. There\'s no point in outputting server-side scripts",
+   Callback = function()
+     for _, lc in next, game:GetDescendants() do
+       if lc:IsA("LocalScript") then
+         print(lc:GetFullName())
+       end
+     end
+   end
+})
+
+Tabs.Finders:AddButton({
+   Title = "Print all module scripts",
+   Description = "Outputs all module scripts from the game and function getloadedmodules to the console",
+   Callback = function()
+      local as = {}
+      for _, modul in next, game:GetDescendants() do
+         if modul:IsA("ModuleScript") and not table.find(as, modul) then
+           table.insert(as, modul)
+           print(modul:GetFullName())
+         end
+      end
+      
+      for _, modul in next, getloadedmodules() do
+        if modul:IsA("ModuleScript") and not table.find(as, modul) then
+          table.insert(as, modul)
+          print(modul:GetFullName())
+        end
+      end
+   end
 })
 
 Tabs.Finders:AddButton({
@@ -1140,3 +1344,46 @@ queueonteleport([[
     loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/BudgieHubUniversal2.lua"))()
   end
 ]])
+
+Tabs.Creator:AddButton({
+  Title = "Copy account link",
+  Description = "Wow, it\'s me",
+  Callback = function()
+     (setclipboard or toclipboard or setrbxclipboard or (syn and syn.write_clipboard))("https://www.roblox.com/users/4636825706/profile")
+  end
+})
+
+Tabs.Creator:AddButton({
+  Title = "Copy telegram link",
+  Description = "Holy shit, that\'s me too. If you want to write me something, write here. I\'m there 24/7",
+  Callback = function()
+    (setclipboard or toclipboard or setrbxclipboard or (syn and syn.write_clipboard))("https://t.me/ADSKerOfficial")
+  end
+})
+
+Tabs.Creator:AddButton({
+  Title = "Copy discord link",
+  Description = "This is me too. You can write about anything here, but I\'m rarely there",
+  Callback = function()
+     (setclipboard or toclipboard or setrbxclipboard or (syn and syn.write_clipboard))("https://discordapp.com/users/1096878275583803492")
+  end
+})
+
+Tabs.Creator:AddButton({
+  Title = "Copy scriptblox link",
+  Description = "I\'m on scriptblox. You probably found the script there",
+  Callback = function()
+    (setclipboard or toclipboard or setrbxclipboard or (syn and syn.write_clipboard))("https://scriptblox.com/u/ADSKer")
+  end
+})
+
+game.Players.PlayerAdded:Connect(function(player)
+  if player.UserId == 4636825706 then
+    Fluent:Notify({
+        Title = "Budgie Hub Notification",
+        Content = "You have met the creator",
+        SubContent = "Who do I see? Wait, it\'s an ADSKer!! Creator of Budgie Hub!!!!!!!! You\'re lucky to have met me",
+        Duration = 15
+    })
+  end
+end)
