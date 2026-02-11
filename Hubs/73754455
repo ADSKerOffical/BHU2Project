@@ -1,0 +1,21 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Survive and kill killers in area 51", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Get all weapons", "", function()
+    for _, weapon in Workspace.Weapons:GetChildren() do
+  if weapon:IsA("Model") and weapon:FindFirstChild("Hitbox") then
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, weapon.Hitbox, 0)
+  end
+end
+end)
+
+tab.newButton("Get armor", "", function()
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, Workspace.AREA51.Amory2Room.Armory.Giver, 0)
+end)
+
+tab.newButton("Get ammo", "", function()
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, Workspace.AREA51.PlantRoom["Box of Shells"].Box, 0)
+end)
