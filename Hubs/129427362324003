@@ -1,0 +1,28 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Duck escape", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Collect all ducks", "", function()
+    for _, duck in Workspace.Logs:GetChildren() do
+  if duck:IsA("BasePart") and duck.Name:lower() == "duck" then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = duck.CFrame
+    for _ = 1, 10 do wait() fireproximityprompt(duck:FindFirstChildOfClass("ProximityPrompt"), 1) end
+    task.wait(0.2)
+  end
+end
+end)
+
+tab.newButton("Exit", "+1 escapes", function()
+   game:GetService("ReplicatedStorage").Events.KickPlayer:FireServer()
+   firesignal(game.Players.PlayerRemoving, game.Players.LocalPlayer)
+end)
+
+local hight = Instance.new("Highlight", Workspace.DuckKIler)
+hight.Adornee = Workspace.DuckKIler
+hight.Enabled = false
+
+tab.newToggle("Highlight duck", "Highlights the killer duck", false, function(toggleState)
+    hight.Enabled = toggleState
+end)
