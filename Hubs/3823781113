@@ -1,0 +1,27 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Saber simulator", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Collect crowns", "Collects all crowns on the server", function()
+  for _, part in Workspace.Gameplay:GetDescendants() do
+    if part:IsA("BasePart") and part.Name:lower() == "crown" then
+      firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, part, 0)
+    end
+  end
+end)
+
+tab.newToggle("Auto swing", "You automatically swing your sword", false, function(toggleState)
+    rhu = toggleState 
+    while rhu and task.wait() do
+      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("SwingSaber"):FireServer()
+    end
+end)
+
+tab.newToggle("Auto sell", "You automatically sell all your slashes", false, function(toggleState)
+    ehy = toggleState
+    while ehy and task.wait() do
+      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("SellStrength"):FireServer()
+    end
+end)
