@@ -1,7 +1,7 @@
 local success, result = pcall(function()
   local games = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/ADSKerOffical/BHU2Project/contents/Hubs?ref=main"))
   for i, v in games do
-    if tostring(game.PlaceId) == string.gsub(v.download_url, "%D", ""):sub(2) then
+    if tostring(game.PlaceId) == string.gsub(v.download_url, "%D", ""):sub(2) or tostring(game.GameId) == string.gsub(v.download_url, "%D", ""):sub(2) then
       return true
     end
   end
@@ -15,8 +15,8 @@ local Window = Fluent:CreateWindow({
     Title = "",
     SubTitle = "",
     TabWidth = 160,
-    Size = UDim2.new(0.5, 0, 0.3, 0),
-    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Size = UDim2.new(0, 0, 0, 0),
+    Acrylic = false, 
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
 })
@@ -33,7 +33,13 @@ Window:Dialog({
             Title = "Yes",
             Callback = function()
                 Fluent:Destroy()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Hubs/" .. tostring(game.PlaceId)))()
+                local admissibility
+                if pcall(function() return game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Hubs/" .. tostring(game.PlaceId)) end) == true then
+                  admissibility = game.PlaceId
+                elseif pcall(function() return game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Hubs/" .. tostring(game.GameId)) end) == true then
+                  admissibility = game.GameId
+                end
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Hubs/" .. tostring(admissibility)))()
             end 
         }, {
             Title = "No",
