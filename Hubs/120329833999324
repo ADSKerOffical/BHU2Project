@@ -30,7 +30,7 @@ tab.newButton("Remove walls", "Removes walls that require money to open", functi
     pcall(function() Workspace.levelWalls:Destroy() end)
     pcall(function() Workspace.level10.killsWall:Destroy() end)
     pcall(function() Workspace.lobby.killDoors:Destroy() end)
-    pcall(function() Workspace.lobby.vipDoor end)
+    pcall(function() Workspace.lobby.vipDoor:Destroy() end)
 end)
 
 tab.newButton("Kill all", "Kill all players with your weapon", function()
