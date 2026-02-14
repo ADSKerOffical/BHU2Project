@@ -1,0 +1,41 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | SCP Games and SCP Monsters", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Get glock", "You get a Glock for further functions", function()
+    local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    repeat task.wait()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Workspace.Dekorasi["SCP MTF"].ClickPart.CFrame
+      fireproximityprompt(Workspace.Dekorasi["SCP MTF"].ClickPart.ProximityPrompt, 0)
+    until game.Players.LocalPlayer.Backpack:FindFirstChild("Glock")
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
+
+tab.newButton("Kill all", "You kill all players with a glock", function()
+    if game.Players.LocalPlayer.Backpack:FindFirstChild("Glock") then
+      game.Players.LocalPlayer.Backpack:FindFirstChild("Glock").Parent = game.Players.LocalPlayer.Character
+   end
+   
+   for _, plr in next, game.Players:GetPlayers() do
+  if plr ~= game.Players.LocalPlayer and workspace:FindFirstChild(plr.Name) and plr.Character:FindFirstChildOfClass("Humanoid") then
+    for _ = 1, 5 do game.Players.LocalPlayer.Character.Glock.Event:FireServer(plr.Character.Humanoid, "Glock", getupvalue(getsenv(game.Players.LocalPlayer.Character.Glock.HandgunScript).OnFire, 14)) end
+  end
+end
+end)
+
+tab.newButton("Modify glock", "Glock shoots without reloading, without the need for ammo and increased damage, thanks to which you can kill players", function()
+    if game.Players.LocalPlayer.Backpack:FindFirstChild("Glock") then
+      game.Players.LocalPlayer.Backpack:FindFirstChild("Glock").Parent = game.Players.LocalPlayer.Character
+    end
+    
+    setconstant(getsenv(game.Players.LocalPlayer.Character.Glock.HandgunScript).OnFire, 48, 0)
+    setconstant(getsenv(game.Players.LocalPlayer.Character.Glock.HandgunScript).OnFire, 44, 0) 
+
+    game.Players.LocalPlayer.Character.Glock.Activated:Connect(function()
+      for _ = 1, 20 do
+        game.Players.LocalPlayer.Character.Glock.Event:FireServer(game.Players.LocalPlayer:GetMouse().Target.Parent:IsA("Model") and game.Players.LocalPlayer:GetMouse().Target.Parent:FindFirstChildOfClass("Humanoid"), "Glock", getupvalue(getsenv(game.Players.LocalPlayer.Character.Glock.HandgunScript).OnFire, 14))
+      end
+    end)
+end)
