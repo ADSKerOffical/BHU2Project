@@ -1,0 +1,25 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Escape running head", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newToggle("Inviolable to heads", "Heads can\'t kill you", false, function(Value)
+  ejjd = Value
+   while ejjd and task.wait() do
+     for _, model in next, game.Workspace.Folder:GetChildren() do
+  if model:IsA("Model") and model.Name == "Felipe" then
+    for _, part in next, model:GetDescendants() do
+      if part:IsA("BasePart") then
+        part.CanTouch = not ejjd
+        part.CanQuery = not ejjd
+      end
+    end
+  end
+end
+   end
+end)
+
+tab.newButton("Get coin", "You get 10 coins (one time)", function()
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, Workspace.Folder.Coin, 0)
+end)
