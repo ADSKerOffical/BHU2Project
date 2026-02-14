@@ -1,0 +1,11 @@
+-- start
+game.Players.LocalPlayer.Character.Archivable = true
+local nonreal, animate = game.Players.LocalPlayer.Character:Clone(), game.Players.LocalPlayer.Character.Animate:Clone()
+nonreal.Parent = workspace
+game.Players.LocalPlayer.Character = nonreal
+workspace.CurrentCamera.CameraSubject = nonreal.Humanoid
+
+-- end
+nonreal:Destroy()
+game.Players.LocalPlayer.Character = workspace[game.Players.LocalPlayer.Name]
+workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
