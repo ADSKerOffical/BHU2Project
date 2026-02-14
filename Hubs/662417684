@@ -1,0 +1,13 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub | Lucky block battlegrounds")
+
+Tab:Button("Get all weapons", function()
+   for _ = 1, 100 do
+game:GetService("ReplicatedStorage").SpawnLuckyBlock:FireServer()
+game:GetService("ReplicatedStorage").SpawnRainbowBlock:FireServer()
+game:GetService("ReplicatedStorage").SpawnGalaxyBlock:FireServer()
+game:GetService("ReplicatedStorage").SpawnDiamondBlock:FireServer()
+game:GetService("ReplicatedStorage").SpawnSuperBlock:FireServer()
+end
+end)
