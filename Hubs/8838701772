@@ -1,6 +1,6 @@
 local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
 
-local window = DrRayLibrary:Load("Budgie Hub | SCP Games and SCP Monsters", "Default")
+local window = DrRayLibrary:Load("Budgie Hub | SCP Monsters or Trevor Creatures", "Default")
 
 local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
 
