@@ -1,6 +1,23 @@
 local BudgieHub = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 BudgieHub:ToggleTransparency(false)
 
+local BHUTitle = "Budgie Hub Universal 2 Alpha"
+
+  local month, day = os.date("%B"), os.date("%d")
+  if month == "February" and day == "14" then
+   BHUTitle = BHUTitle .. "♥️"
+  elseif month == "October" and day == "31" then
+    BHUTitle = BHUTitle .. "🎃"
+  elseif month == "January" and day == "1" then
+    BHUTitle = BHUTitle .. "🎄"
+  elseif month == "July" and day == "25" then
+    BHUTitle = BHUTitle .. "🎉"
+  elseif month == "April" and day == "20" then
+    BHUTitle = BHUTitle .. "🥚"
+  elseif month == "May" and day == "31" then
+    BHUTitle = BHUTitle .. "🦜"
+  end
+
 local Window = BudgieHub:CreateWindow({
     Title = "Budgie Hub Universal 2 Alpha",
     SubTitle = "by ADSKer",
@@ -64,10 +81,53 @@ local Tabs = {
 
 local ToolControl = Tabs.Main:AddSection("Tool Control")
 
-local search
-for _, w in next, Window.Root:GetDescendants() do
-  if w:IsA("TextLabel") and w.Text == "Tool Control" then
-     search = Instance.new("TextBox", w.Parent.Parent)
+--[[
+ToolControl.Container.Parent.Parent – scroll frame
+ToolControl.Container.Parent – section with signature
+ToolControl.Container – all buttons in section
+]]
+
+--[[local function addSectionToggle(inst, algnpos)
+  local icon = Instance.new("TextButton", inst.Parent)
+  icon.Size = UDim2.new(0.06, 0, 0.06, 0)
+  icon.Name = "BHU2SectionToggle"
+  icon.Text = "Hide"
+  icon.TextColor3 = Color3.new(1, 1, 1)
+  icon.Position = UDim2.new(0.1 + algnpos, 0, 0, 0)
+  icon.BackgroundTransparency = 0.3
+  icon.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+  icon.BorderSizePixel = 0
+  icon:SetAttribute("Toggled", false)
+  
+  icon.MouseButton1Click:Connect(function()
+    icon:SetAttribute("Toggled", not icon:GetAttribute("Toggled"))
+    for _, l in next, inst:GetChildren() do
+      if l:IsA("GuiObject") then
+        l.Visible = not icon:GetAttribute("Toggled")
+      end
+    end
+    if icon:GetAttribute("Toggled") == false then 
+      icon.Text = "Hide"
+      icon.Size = UDim2.new(0.06, 0, 0.06, 0)
+      icon.Position = UDim2.new(0.1 + algnpos, 0, 0, 0)
+    else 
+      icon.Text = "Show"
+      icon.Size = UDim2.new(0.06, 0, 0.6, 0)
+      icon.Position = UDim2.new(0.1 + algnpos, 0, 0.15, 0)
+    end
+    
+    icon.Parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+      if icon:GetAttribute("Toggled") == false then
+        icon.Size = UDim2.new(0.06, 0, 0.06, 0)
+        icon.Position = UDim2.new(0.1 + algnpos, 0, 0, 0)
+      else
+        icon.Size = UDim2.new(0.06, 0, 0.6, 0)
+        icon.Position = UDim2.new(0.1 + algnpos, 0, 0.15, 0)
+      end
+    end)
+  end)
+end]]--
+     local search = Instance.new("TextBox", ToolControl.Container.Parent.Parent)
      search.Name = "Search"
      search.Size = UDim2.new(1, 0, 0, 50)
      search.Position = UDim2.new(0.4, 0, 0.2, 0)
@@ -82,10 +142,11 @@ for _, w in next, Window.Root:GetDescendants() do
      search.PlaceholderText = "Search section or functions"
      
      search.FocusLost:Connect(function(enterPress)
-       if string.len(search.Text) >= 75 then 
-         search.Text = "" 
+       if string.len(search.Text) > 75 then 
+         search.Text = search.Text:sub(75)
        end
        if enterPress then
+         search.Text = search.Text:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " ")
          for _, ke in search.Parent:GetDescendants() do
            if ke:IsA("TextLabel") then
              ke.Parent.Parent.Visible = true
@@ -93,7 +154,7 @@ for _, w in next, Window.Root:GetDescendants() do
          end
          
          for _, textl in next, search.Parent:GetDescendants() do
-           if textl:IsA("TextLabel") and not string.find(textl.Text:lower(), search.Text:lower()) and textl.Parent:IsA("Frame") and textl.Parent.Parent:IsA("TextButton") then
+           if textl:IsA("TextLabel") and not textl.Text:lower():find(search.Text:lower()) then -- and textl.Parent:IsA("Frame")
              textl.Parent.Parent.Visible = false
           end
         end
@@ -105,18 +166,14 @@ for _, w in next, Window.Root:GetDescendants() do
              end
            end
          end
-         Window:SelectTab(1)
+        Window:SelectTab(1)
        end
      end)
-     break
-  end
-end
 
 local Toggle = ToolControl:AddToggle("ToolControl", {
     Title = "Tool: Damage all players", 
     Description = "This function using method with TouchTransmitter. This doesn\'t work in all places. Tool, Players",
     Default = false,
-    Type = "ToolControl",
     Callback = function(state)
 	  aaa = state 
 	  while aaa and game:GetService("RunService").RenderStepped:Wait() do
@@ -268,7 +325,7 @@ local PlayerControl = Tabs.Main:AddSection("Local Player Control")
 
 local Toggle = PlayerControl:AddToggle("MyToggle", {
     Title = "LocalPlayer: Fling", 
-    Description = "You can knock back nearby players and objects if collisions are enabled. LocalPlayer, Fling",
+    Description = "You can fling nearby players and objects if collisions are enabled. LocalPlayer, Fling",
     Default = false,
     Callback = function(state)
      aae = state
@@ -428,7 +485,7 @@ PlayerControl:AddToggle("MyToggle", {
   end
 })
 
-Tabs.Main:AddToggle("MyToggle", {
+PlayerControl:AddToggle("MyToggle", {
   Title = "LocalPlayer: Anti bang mode",
   Description = "If the anti bang couldn\'t detect the player\'s animation, but he is attached to you, then you activate this function. LocalPlayer, Anti bang",
   Default = false,
@@ -441,6 +498,21 @@ game:GetService("RunService").Heartbeat:Wait()
     game:GetService("RunService").Heartbeat:Wait()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = last_pick_sin_mrazy
               end
+  end
+})
+
+PlayerControl:AddToggle("Defense", {
+  Title = "LocalPlayer: Async character",
+  Description = "To the client, you\'ll still be able to move freely, but to the server, you'll feel like you\'re standing still. LocalPlayer, Async",
+  Default = false,
+  Callback = function(Value)
+    nejb = Value
+   while nejb and task.wait() do
+     local arm = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+     local jis = arm:FindFirstChildWhichIsA("JointInstance")
+     jis.Enabled = false
+     jis.Enabled = true
+    end
   end
 })
 
@@ -691,6 +763,53 @@ end
   end
 })
 
+NPCControl:AddToggle("Defense", {
+  Title = "NPC: NPC fling",
+  Description = "You flinging nearby players using NPCs",
+  Default = false,
+  Callback = function(Value)
+   jdj = Value
+    while jdj and task.wait() do
+local Chumanoid, Cdistance = nil, math.huge
+for _, part in next, game.Workspace:GetPartBoundsInRadius((game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart").Position, 80) do
+    if not part:IsDescendantOf(game.Players.LocalPlayer.Character) and part.Parent:FindFirstChildOfClass("Humanoid") and game.Players:GetPlayerFromCharacter(part.Parent) then
+        local humanoid = part.Parent:FindFirstChildOfClass("Humanoid")
+        local distance = (part.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude 
+        if distance < Cdistance then
+            Cdistance = distance
+            Chumanoid = humanoid 
+        end
+    end
+end
+
+if Chumanoid then
+    game.Players.LocalPlayer.SimulationRadius = math.huge
+
+  local humanoids = {}
+for _, part in next, workspace:GetPartBoundsInRadius(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, 80) do
+    if part.Parent:IsA("Model") and part.Parent:FindFirstChildOfClass("Humanoid") and not part:IsDescendantOf(game.Players.LocalPlayer.Character) and not game.Players:GetPlayerFromCharacter(part.Parent) then
+      if not table.find(humanoids, part.Parent:FindFirstChildOfClass("Humanoid")) then
+        table.insert(humanoids, part.Parent:FindFirstChildOfClass("Humanoid"))
+      end
+    end
+  end
+
+   for _, humanoid in next, humanoids do
+     if isnetworkowner(humanoid.RootPart) then
+     for _, part in next, humanoid.Parent:GetDescendants() do
+       if part:IsA("BasePart") then
+          part.CanCollide = false
+          part.AssemblyLinearVelocity = (Chumanoid.RootPart.Position - humanoid.RootPart.Position).Unit * 200
+          part.AssemblyAngularVelocity = Vector3.new(2000, 2000, 2000)
+        end
+      end
+     end
+   end
+ end
+end
+  end
+})
+
 local AnimationControl = Tabs.Main:AddSection("Animation Control")
 
 local Dropdown = AnimationControl:AddDropdown("Dropdown", {
@@ -838,7 +957,48 @@ end
     end
 })
 
-local LightControl = Tabs.Main:AddSection("Light control")
+local CameraControl = Tabs.Main:AddSection("Camera Control")
+
+CameraControl:AddButton({
+  Title = "Camera: Infinity zoom",
+  Description = "You can zoom out the camera as much as you want",
+  Callback = function()
+     game.Players.LocalPlayer.CameraMaxZoomDistance = math.huge
+  end
+})
+
+CameraControl:AddButton({
+  Title = "Camera: Refresh camera",
+  Description = "You resume your camera",
+  Callback = function()
+    workspace.CurrentCamera:Remove() task.wait(wait())
+    workspace.CurrentCamera.CameraType = "Custom"
+    game.Players.LocalPlayer.CameraMode = "Classic"
+    workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
+  end
+})
+
+CameraControl:AddToggle("MyToggle", {
+  Title = "Camera: Noclip camera",
+  Description = "Your camera can pass through objects",
+  Default = false,
+  Callback = function(Value)
+    local CNE = Value
+for i, v in next, getgc() do
+    if getfenv(v).script == game.Players.LocalPlayer.PlayerScripts.PlayerModule.CameraModule.ZoomController.Popper and typeof(v) == "function" then
+        for i2, v2 in next, debug.getconstants(v) do
+            if tonumber(v2) == 0.25 and CNE == true then
+                debug.setconstant(v, i2, 0)
+            elseif tonumber(v2) == 0 and CNE == false then
+                debug.setconstant(v, i2, 0.25)
+            end
+        end
+    end
+end
+  end
+})
+
+local LightControl = Tabs.Main:AddSection("Light Control")
 
 local Dropdown = LightControl:AddDropdown("Dropdown", {
     Title = "Light: Set time",
@@ -884,14 +1044,73 @@ end)
   end
 })
 
+local CoreControl = Tabs.Main:AddSection("Core Gui Control")
+
+CoreControl:AddButton({
+  Title = "CoreGui: Enable Backpack",
+  Description = "",
+  Callback = function(Value)
+     game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+  end
+})
+
+CoreControl:AddButton({
+  Title = "CoreGui: Enable PlayerList",
+  Description = "Enables CoreGui PlayerList",
+  Callback = function()
+    game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Health, true) 
+  end
+})
+
+CoreControl:AddButton({
+  Title = "CoreGui: Enable Health",
+  Description = "Enables CoreGui Health",
+  Callback = function()
+     game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Health, true)
+  end
+})
+
+CoreControl:AddButton({
+  Title = "CoreGui: Enable Chat",
+  Description = "Enables CoreGui Chat",
+  Callback = function()
+     game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
+  end
+})
+
+CoreControl:AddButton({
+  Title = "CoreGui: Enable AvatarSwitcher",
+  Description = "Enables CoreGui AvatarSwitcher",
+  Callback = function()
+    game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.AvatarSwitcher, true)
+  end
+})
+
+CoreControl:AddButton({
+  Title = "CoreGui: Enable all",
+  Description = "Enables all CoreGui",
+  Callback = function()
+     game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
+  end
+})
+
 local SoundControl = Tabs.Main:AddSection("Sound Control")
 
 SoundControl:AddButton({
     Title = "Sound: Reset ambient reverb",
-    Description = "Reset Ambient Reverb (Removes global echo or something like that if it exists)",
+    Description = "Reset Ambient Reverb (Removes global echo or something like that if it exists). Sound",
     Callback = function()
         game:GetService("SoundService"):ResetPropertyToDefault("AmbientReverb")
     end
+})
+
+SoundControl:AddToggle("MyToggle", {
+  Title = "Sound: Mute sounds",
+  Description = "All sounds in the game will be turned off",
+  Default = false,
+  Callback = function(Value)
+     UserSettings():GetService("UserGameSettings").MasterVolume = (Value == true and 0 or 1)
+  end
 })
 
 local TeleportControl = Tabs.Main:AddSection("Place Teleport Control")
@@ -934,11 +1153,11 @@ TeleportControl:AddButton({
   end
 })
 
-local CarControl = Tabs.Main:AddSection("Car control")
+local CarControl = Tabs.Main:AddSection("Vehicle Control")
 
 local Dropdown = CarControl:AddDropdown("Dropdown", {
-    Title = "Car: Send into the void",
-    Description = "Current car or all cars",
+    Title = "Vehicle: Send vehicle into the void",
+    Description = "Current vehicle or all vehicles",
     Values = {"Current", "All"},
     Multi = false,
     Default = "...",
@@ -946,6 +1165,7 @@ local Dropdown = CarControl:AddDropdown("Dropdown", {
 
 Dropdown:OnChanged(function(Value)
   pcall(function()
+   if Value == "..." then return end
     local function FindCar(instance)
   local current = instance.Parent
   
@@ -991,7 +1211,7 @@ end
 end)
 
 CarControl:AddButton({
-    Title = "Car: Grab all cars",
+    Title = "Vehicle: Grab all vehicles",
     Description = "Grabs all vehicles to you. May contain bugs",
     Callback = function()
         local function FindCar(instance)
@@ -1028,6 +1248,112 @@ for _, seat in next, game.Workspace:GetDescendants() do
 end
     end
 })
+
+local HapticControl = Tabs.Main:AddSection("Haptic Control")
+
+HapticControl:AddButton({
+  Title = "Haptic: Vibrate",
+  Description = "A clear example of how haptic works",
+  Callback = function()
+     if game:GetService("HapticService"):IsMotorSupported(Enum.UserInputType.Gamepad1, Enum.VibrationMotor.Large) then
+      game:GetService("HapticService"):SetMotor(Enum.UserInputType.Gamepad1, Enum.VibrationMotor.Large, 0.2)
+        task.wait(0.3)
+      game:GetService("HapticService"):SetMotor(Enum.UserInputType.Gamepad1, Enum.VibrationMotor.Large, 0)
+    end
+  end
+})
+
+HapticControl:AddToggle("MyToggle", {
+  Title = "Haptic: Disable haptic",
+  Description = "Your device is not haptic (vibrates). This can be disabled in the normal settings",
+  Default = false,
+  Callback = function(Value)
+     sethiddenproperty(UserSettings():GetService("UserGameSettings"), "HapticStrength", Value == true and 0 or 1)
+  end
+})
+
+local FFlagControl = Tabs.Main:AddSection("FFlags Control")
+FFlagControl:AddParagraph({
+    Title = "",
+    Content = "For security reasons, all these FFlags are reset when you exit the game"
+})
+
+local Input = FFlagControl:AddInput("Input", {
+    Title = "FFlag: FontSizePadding",
+    Description = "Changes the text size in the ENTIRE app and in the entire game. FFlag",
+    Default = "1",
+    Placeholder = "Int",
+    Numeric = true, 
+    Finished = true, 
+    Callback = function(Value)
+        setfflag("FontSizePadding", tostring(Value))
+    end
+})
+
+local Input = FFlagControl:AddInput("Input", {
+    Title = "FFlag: TouchSenderMaxBandwidthBps",
+    Description = "Determines how quickly the event is fired part.Touched on your character. FFlag",
+    Default = "12940",
+    Placeholder = "Int",
+    Numeric = true,
+    Finished = true,
+    Callback = function(Value)
+        setfflag("TouchSenderMaxBandwidthBps", tostring(Value))
+    end
+})
+
+local Input = FFlagControl:AddToggle("Input", {
+    Title = "FFlag: SkyUseRGBEEncoding",
+    Description = "Makes the sky black. FFlag",
+    Default = false,
+    Callback = function(Value)
+        setfflag("SkyUseRGBEEncoding", tostring(Value))
+    end
+})
+
+local Input = FFlagControl:AddInput("Input", {
+    Title = "FFlag: RaycastMaxDistance",
+    Description = "Sets a limit size for Ray.new including HipHeight of humanoids. FFlag",
+    Default = "15000",
+    Placeholder = "Int",
+    Numeric = true,
+    Finished = true,
+    Callback = function(Value)
+        setfflag("RaycastMaxDistance", tostring(Value))
+    end
+})
+
+FFlagControl:AddToggle("Defense", {
+  Title = "FFlag: DebugDrawBroadPhaseAABBs",
+  Description = "Highlights hitboxes of humanoids and parts. FFlag",
+  Default = false,
+  Callback = function(Value)
+     setfflag("DebugDrawBroadPhaseAABBs", tostring(Value))
+  end
+})
+
+local Input = FFlagControl:AddInput("Input", {
+    Title = "FFlag: TaskSchedulerTargetFps",
+    Description = "Sets a limit on FPS. 0 is the device\'s default. FFlag",
+    Default = "0",
+    Placeholder = "Int",
+    Numeric = true,
+    Finished = true,
+    Callback = function(Value)
+        setfflag("TaskSchedulerTargetFps", tostring(Value))
+    end
+})
+
+game:GetService("Players").PlayerRemoving:Connect(function(plr)
+  if plr == game.Players.LocalPlayer then
+    setfflag("FontSizePadding", "1")
+    setfflag("TouchSenderMaxBandwidthBps", "12940")
+    setfflag("SkyUseRGBEEncoding", "false")
+    setfflag("RaycastMaxDistance", "15000")
+    setfflag("DebugDrawBroadPhaseAABBs", "false")
+    setfflag("TaskSchedulerTargetFps", "0")
+  end
+end)
 
 
 
