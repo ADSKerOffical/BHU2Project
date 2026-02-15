@@ -1,0 +1,32 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | gang up on people simulator", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+getgenv().isnetworkowner = newcclosure(function(part: BasePart)
+  return (part.ReceiveAge == 0 and gethiddenproperty(part, "NetworkIsSleeping") == false)
+end)
+
+tab.newToggle("Spam attack", "Deals damage to opponents very quickly", false, function(Value)
+  jehhe = Value
+  while jehhe and task.wait() do
+    local tool = game.Players.LocalPlayer.Character:FindFirstChild("Fight")
+    if tool then
+      for _, name in {"Slap", "Stomp", "Kick"} do
+        tool.FightEvent:FireServer(name)
+      end
+    end
+  end
+end)
+
+tab.newButton("Get cash", "Teleports you to all cashes. I could have done it better, but I\'m too lazy", function()
+    local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+for _, cash in Workspace.Particles:GetDescendants() do
+  if cash:IsA("BasePart") and cash.Name == "Cash" then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cash.CFrame
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, cash, 0)
+  end
+end
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
