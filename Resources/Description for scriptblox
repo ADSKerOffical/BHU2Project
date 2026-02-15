@@ -2,7 +2,7 @@ Budgie Hub Universal 2 is here.
 
 Sorry about the previous version of the script — there was a bug with the Orion library that prevented interacting with the menu when you were playing on a PC. Also, many functions in the "Game" tab didn't work because I rushed it and pasted random scripts I found
 But after a year I decided why not make a second version of the hub with fixes and switch to the Fluent library, since from your feedback I realized the first one turned out pretty bad. In the Main tab I added a TextBox to search for other functions and sections, but it work in progress.
-I decided not to make a separate tab for game-specific scripts, so the script detects which place you're playing and will offer to run a script made specifically for that game, run the universal script, or not run anything at all. I'll personally create the scripts for those modes, but I should warn you I probably won't fix them if they have bugs or maybe I will, but no promises. It’s a hard to write scripts on a phone when working alone.
+I decided not to make a separate tab for game-specific scripts, so the script detects which place you're playing and will offer to run a script made specifically for that game, run the universal script, or not run anything at all. I'll PERSONALLY create the scripts for those places, but I should warn you I probably won't fix them if they have some bugs or maybe I will, but no promises. It’s a hard to write scripts on a phone and working alone.
 Here's the list of games (the used library and a link to the place are shown in parentheses):
 
 random tool (https://roblox.com/games/9879422661, Fluent)
@@ -21,3 +21,20 @@ Cool Rarities (https://roblox.com/games/13020029200, Pop UI)
 Superpower simulator: Chakra (https://roblox.com/games/11696357981, Orion)
 KJ battlegrounds (https://roblox.com/games/17750416316, Orion)
 Push the dummies into sparta hole (https://roblox.com/games/76703229, Orion)
+Cut Trees (https://roblox.com/games/135880624242201, Pop UI)
+GUNS VS FNAF (https://roblox.com/games/120329833999324, DrRay)
+Strongman simulator (https://roblox.com/games/6766156863, DrRay)
+Saber simulator (https://roblox.com/games/3823781113, DrRay)
+Duck escape (https://roblox.com/games/129427362324003, DrRay)
+Find the floppa Morphs (https://www.roblox.com/games/9579974235, Pop UI)
+Survive and kill the Killers in area 51 (https://www.roblox.com/games/155382109, DrRay)
+SCP Games and SCP Monsters (https://www.roblox.com/games/7253149844, DrRay)
+SCP Monsters or Trevor Creatures (https://www.roblox.com/games/8838701772, DrRay)
+Lucky block battlegrounds (https://www.roblox.com/games/662417684, Pop UI)
+Escape Running Heas (https://www.roblox.com/games/6205205961, DrRay)
+
+Short about the script:
+
+The script is not only for fun, but also as a tool for the creating of scripts. In main tab is search TextBox that searches for the function name, but in the Alpha version searches for description. Also in the script there is a bypass for anti console, anti cheet Adonis and more. But something terrible can hide behind this script
+
+I hope that this time I did it well
