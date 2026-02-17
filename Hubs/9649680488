@@ -1,0 +1,11 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub | Backrooms race")
+
+Tab:Button("Get wins", function()
+   for _, part in next, Workspace.Racetracks:GetDescendants() do
+  if part:IsA("BasePart") then
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, part, 0)
+  end
+end
+end)
