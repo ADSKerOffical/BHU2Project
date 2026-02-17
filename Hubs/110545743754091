@@ -1,0 +1,14 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub | Village vs Zombie")
+
+Tab:Button("Mod equipped gun", function()
+   local settings = require(game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Setting)
+settings.BaseDamage = math.huge
+settings.Auto = true
+settings.FireRate = 0
+settings.BulletSpeed = 1000
+settings.Lifesteal = math.huge
+settings.AmmoPerClip = math.huge
+settings.MaxAmmo = math.huge
+end)
