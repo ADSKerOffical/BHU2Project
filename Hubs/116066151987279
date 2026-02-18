@@ -1,0 +1,25 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Cheese Escape: The Lurking", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Collect all cheeses", "Collects all cheeses on the map", function()
+    for _, cheese in Workspace.Cheeses:GetChildren() do
+  if cheese:IsA("BasePart") and cheese.Name == "Cheese" then
+    fireclickdetector(cheese.ClickDetector, math.huge)
+  end
+end
+end)
+
+tab.newButton("Remove the rat", "Removes the rat, making you immune to it", function()
+    Workspace.Map.Important.Rat:Destroy()
+end)
+
+tab.newButton("Remove door", "Removes the door that opens in 20 clicks", function()
+    Workspace.Map.Important["Click Door"].SafezoneDoor:Destroy()
+end)
+
+tab.newButton("Get badge", "Receives a badge", function()
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, Workspace.Badge, 0)
+end)
