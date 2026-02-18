@@ -1,0 +1,13 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub")
+
+Tab:Toggle("Instant grab", function(arg)
+   udh = arg
+   local con = game:GetService("ProximityPromptService").PromptButtonHoldBegan:Connect(function(promp)
+   promp.HoldDuration = 0
+   task.wait(wait())
+  firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.ZoneSafe, 0)
+end)
+  task.spawn(function() repeat task.wait() until udh == false con:Disconnect() end)
+end)
