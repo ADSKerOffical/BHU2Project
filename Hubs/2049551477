@@ -1,0 +1,38 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Cheese escape", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newButton("Remove door", "Removes a door that can be opened in 30 clicks", function()
+ Workspace.SignToOpenDoor:Destroy()
+   for _, door in Workspace:GetChildren() do
+     if door:IsA("BasePart") and door.Name == "Door" and door:FindFirstChild("DoorOpen") then
+      door:Destroy()
+    end
+  end
+end)
+
+tab.newButton("Collect all the cheeses", "Collects all the cheeses", function()
+  for _, cheese in Workspace.FindCheese:GetDescendants() do
+    if cheese:IsA("BasePart") and cheese.Name == "Cheese" then
+      fireclickdetector(cheese:FindFirstChild("ClickDetector"), math.huge)
+    end
+  end
+end)
+
+local highlight = Instance.new("Highlight")
+
+tab.newToggle("Highlight mouse", "Highlighting the mouse. If you remove the mouse, the function will not work", false, function(toggleState)
+   highlight.Parent = Workspace:FindFirstChild("Mouse") or Workspace:FindFirstChild("Rat")
+   highlight.Adornee = highlight.Parent
+   highlight.Enabled = toggleState
+end)
+
+tab.newButton("Remove mouse", "You remove the mouse making yourself invulnerable to it", function()
+    (Workspace:FindFirstChild("Mouse") or Workspace:FindFirstChild("Rat")):Destroy()
+end)
+
+tab.newDropdown("Teleport to", "Teleports you to the place", {"Chapter 2", "Chapter 3", "Random Maze"}, function(selectedOption)
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, Workspace:FindFirstChild("TeleportTo" .. selectedOption:gsub(" ", "")), 0)
+end)
