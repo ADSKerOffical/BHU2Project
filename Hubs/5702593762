@@ -1,0 +1,11 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub | Climb 1000 stairs")
+
+Tab:Button("Step on all stairs", function()
+   for _, stair in next, Workspace.Stairs:GetChildren() do
+  if stair:IsA("BasePart") then
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, stair, 0)
+  end
+end
+end)
