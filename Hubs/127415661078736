@@ -1,0 +1,10 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub")
+
+Tab:Textstring2("Reach bite distance")
+
+Tab:Textbox("100", function(arg)
+   local eyg = tonumber(arg) ~= nil and math.clamp(arg, 0, 2048) or 100
+   workspace:WaitForChild("Worms"):WaitForChild("Worm-" .. game.Players.LocalPlayer.Name).Head.WormHitbox.Size = Vector3.new(eyg, eyg, eyg)
+end)
