@@ -1,0 +1,41 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub")
+
+Tab:Button("Get super tools", function()
+   local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "A gift from heaven"
+tool.RequiresHandle = false
+
+tool.Activated:Connect(function()
+  for _ = 1, 30 do task.wait() game:GetService("ReplicatedStorage"):WaitForChild("CarAirstrike"):FireServer(game.Players.LocalPlayer:GetMouse().Hit.Position) end
+end)
+
+local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Rain from cars"
+tool.RequiresHandle = false
+
+tool.Activated:Connect(function()
+  for _ = 1, 10 do game:GetService("ReplicatedStorage"):WaitForChild("SpawnCars"):FireServer(game.Players.LocalPlayer:GetMouse().Hit.Position) end
+end)
+
+local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "The Path of Death"
+tool.RequiresHandle = false
+
+tool.Activated:Connect(function()
+  for i = 1, 32 do
+    game:GetService("ReplicatedStorage"):WaitForChild("DropBlock"):FireServer(game.Players.LocalPlayer.Character.HumanoidRootPart.Position + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.LookVector * i * 20 + Vector3.new(0, -65, 0))
+  end
+end)
+
+local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Caraclysm"
+tool.RequiresHandle = false
+
+tool.Activated:Connect(function()
+  for i = 1, 300 do
+    game:GetService("ReplicatedStorage"):WaitForChild("DropBlock"):FireServer(game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(math.random(-300, 300), 10, math.random(-300, 300)))
+  end
+end)
+end)
