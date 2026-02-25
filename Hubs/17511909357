@@ -1,0 +1,29 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub")
+
+Tab:Button("Kill all NPC\'s", function()
+   local function gettool()
+for _, plr in game.Players:GetPlayers() do
+  for _, tool in plr.Character:GetChildren() do
+     if tool:IsA("Tool") and tool: FindFirstChild("InflictTarget", true) and tool:FindFirstChild("InflictTarget", true):IsA("RemoteEvent") then
+        return tool:FindFirstChild("InflictTarget", true)
+     end
+  end
+
+  for _, tool in plr.Backpack:GetChildren() do
+    if tool:IsA("Tool") and tool: FindFirstChild("InflictTarget", true) and tool:FindFirstChild("InflictTarget", true):IsA("RemoteEvent") then
+       return tool:FindFirstChild("InflictTarget", true)
+     end
+  end
+end
+end
+
+if gettool() then
+  for _, hum in next, workspace:GetDescendants() do
+     if hum:IsA("Humanoid") and hum.Parent:IsA("Model") then
+        gettool():FireServer(hum, hum.RootPart, math.huge, Vector3.zero, false, false)
+     end
+  end
+end
+end)
