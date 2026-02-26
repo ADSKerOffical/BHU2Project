@@ -1,0 +1,11 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub")
+
+Tab:Button("Find all chomiks on the map", function()
+   for _, chomik in next, workspace.chomiki:GetChildren() do
+  if chomik:IsA("BasePart") then
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, chomik, 0)
+  end
+end
+end)
