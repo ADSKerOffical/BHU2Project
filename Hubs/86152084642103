@@ -1,0 +1,30 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub")
+game:GetService("GuiService"):SetGameplayPausedNotificationEnabled(false)
+
+Tab:Button("Mega serious punch", function()
+   for _ = 1, 10 do
+    game:GetService("ReplicatedStorage"):WaitForChild("PunchRemote"):FireServer("SeriousPunch")
+  end
+end)
+
+Tab:Button("Remove all walls", function()
+   Workspace.Borders:ClearAllChildren()
+end)
+
+local ah = 0
+Tab:Toggle("Auto farm rebirth", function(arg)
+ Ejje = arg
+   while Ejje do
+   ah += 1
+  coroutine.wrap(function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2308, 20, 3)
+      fireproximityprompt(Workspace:WaitForChild("RebirthGod").ProximityPrompt, 0)
+  end)()
+    if ah >= 100 then
+      ah = 0
+      task.wait(.3)
+    end
+  end
+end)
