@@ -59,5 +59,68 @@ Window:Dialog({
    loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/BudgieHubUniversal2.lua"))()
  end
 else
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/BudgieHubUniversal2.lua"))()
+  local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+  Fluent:Notify({
+        Title = "Budgie Hub | Error",
+        Content = "An internal error occurred while trying to check the place with github reposite. Launching another detection method... (It may take time)",
+        SubContent = "",
+        Duration = 10
+  })
+  local link: string
+local success, result = pcall(function()
+  return game:HttpGetAsync("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Hubs/" .. tostring(game.PlaceId))
+end)
+
+if not success then
+    local success2, result2 = pcall(function()
+      return game:HttpGetAsync("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Hubs/" .. tostring(game.GameId))
+    end)
+    if not success2 then
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/BudgieHubUniversal2.lua"))()
+       return
+      else
+      link = game:HttpGetAsync("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Hubs/" .. tostring(game.GameId))
+    end
+  else
+    link = game:HttpGetAsync("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Hubs/" .. tostring(game.PlaceId))
+end
+
+local Window = Fluent:CreateWindow({
+    Title = "",
+    SubTitle = "",
+    TabWidth = 160,
+    Size = UDim2.new(0, 0, 0, 0),
+    Acrylic = false, 
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
+
+Window.Root.AnchorPoint = Vector2.new(0.5, 0.5)
+Window.Root.BackgroundTransparency = 1
+Window.Root.Position = UDim2.new(0.5, 0, 0.5, 0)
+
+Window:Dialog({
+    Title = "Game detected",
+    Content = "Budgie hub has a separate script for this game. Run this script instead of the universal?",
+    Buttons = {
+        { 
+            Title = "Yes",
+            Callback = function()
+                Fluent:Destroy()
+                loadstring(link)()
+            end 
+        }, {
+            Title = "No",
+            Callback = function()
+                Fluent:Destroy()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/BudgieHubUniversal2.lua"))()
+            end
+        }, {
+            Title = "Don\'t run anything",
+            Callback = function()
+               Fluent:Destroy()
+            end
+        }
+    }
+})
 end
