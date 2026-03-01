@@ -3,7 +3,7 @@ Budgie Hub Universal 2 is here.
 Sorry about the previous version of the script — there was a bug with the Orion library that prevented interacting with the menu when you were playing on a PC. Also, many functions in the "Game" tab didn't work because I rushed it and pasted random scripts I found
 But after a year I decided why not make a second version of the hub with fixes and switch to the Fluent library, since from your feedback I realized the first one turned out pretty bad. In the Main tab I added a TextBox to search for other functions and sections, but it work in progress.
 I decided not to make a separate tab for game-specific scripts, so the script detects which place you're playing and will offer to run a script made specifically for that game, run the universal script, or not run anything at all. I'll PERSONALLY create the scripts for those places, but I should warn you I probably won't fix them if they have some bugs or maybe I will, but no promises. It’s a hard to write scripts on a phone and working alone.
-Here's the list of games (the used library and a link to the place are shown in parentheses):
+Here's the list of games (the used library and a link to the place are shown in parentheses): 
 
 random tool (https://roblox.com/games/9879422661, Fluent)
 Doge head escape (https://roblox.com/games/8831256282, Orion)
@@ -32,9 +32,19 @@ SCP Games and SCP Monsters (https://www.roblox.com/games/7253149844, DrRay)
 SCP Monsters or Trevor Creatures (https://www.roblox.com/games/8838701772, DrRay)
 Lucky block battlegrounds (https://www.roblox.com/games/662417684, Pop UI)
 Escape Running Heas (https://www.roblox.com/games/6205205961, DrRay)
-
-Short about the script:
-
-The script is not only for fun, but also as a tool for the creating of scripts. In main tab is search TextBox that searches for the function name, but in the Alpha version searches for description. Also in the script there is a bypass for anti console, anti cheet Adonis and more. But something terrible can hide behind this script
+Find the Chomiks (https://roblox.com/games/7031179594, Pop UI)
+gang up on people simulator (https://www.roblox.com/games/5610197459, DrRay)
+Backrooms Race (https://www.roblox.com/games/9649680488, Pop UI)
+Backrooms motion (https://www.roblox.com/games/17511909357, Pop UI)
+Punch! World Cutting Slash (https://www.roblox.com/games/86152084642103 , Pop UI)
+Push Dummies Down The Sparta Hole! (https://www.roblox.com/games/76703229, Orion)
+Cheese Escape (https://roblox.com/games/5777099015, DrRay)
+Cheese Escape: The Lurking (https://www.roblox.com/games/116066151987279, DrRay)
+Village vs Zombie (https://www.roblox.com/games/110545743754091, Pop UI)
+Fill The Ball Pit! (https://www.roblox.com/games/88086056853951)
+Climb 1,000 Stairs (https://www.roblox.com/games/5702593762)
+Ohio Tools (https://www.roblox.com/games/85011874799856, Pop UI)
+Weapon Fighting (https://www.roblox.com/games/9468518240, Pop UI)
+Become hungry worm (https://www.roblox.com/games/127415661078736, Pop UI)
 
 I hope that this time I did it well
