@@ -1,0 +1,39 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub")
+
+Tab:Dropdown("AK47 Functions", {"Get AK47", "Modify AK47", "Kill all with AK47"}, function(arg)
+   if arg == "Get AK47" then
+   for _, decal in next, Workspace:GetDescendants() do
+  if decal:IsA("Decal") and decal.Parent.Name == "Button" and decal.Texture == "rbxassetid://3420079845" then
+    fireclickdetector(decal.Parent:FindFirstChildWhichIsA("ClickDetector"), math.huge)
+  end
+end
+  repeat task.wait() until workspace:FindFirstChild("AK47", true) and workspace:FindFirstChild("AK47", true):IsA("Tool")
+  task.wait()
+for _, tool in next, workspace:GetDescendants() do
+  if tool:IsA("Tool") and tool.Name == "AK47" and tool:FindFirstChild("Handle") and not game.Players:GetPlayerFromCharacter(tool.Parent) then
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, tool.Handle, 0)
+  end
+end
+   elseif arg == "Modify AK47" then
+   local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("AK47") or game.Players.LocalPlayer.Character:FindFirstChild("AK47")
+   tool.Parent = game.Players.LocalPlayer.Character
+local settings = require(tool.Setting)
+settings.Auto = true
+settings.FireRate = 0
+settings.AmmoPerClip = math.huge
+settings.BaseDamage = math.huge
+settings.BulletSpeed = 1e5
+settings.Lifesteal = math.huge
+settings.Knockback = 1e9
+settings.ReloadTime = 0
+   elseif arg == "Kill all with AK47" then
+     local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("AK47") or game.Players.LocalPlayer.Character:FindFirstChild("AK47")
+for _, hum in next, workspace:GetDescendants() do
+  if hum:IsA("Humanoid") then
+    tool:WaitForChild("GunScript_Server"):WaitForChild("InflictTarget"):FireServer(hum, hum.RootPart, math.huge, Vector3.zero, 1e9, math.huge, false)
+  end
+end
+   end
+end)
