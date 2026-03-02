@@ -4,7 +4,27 @@ tool.Name = "Tool gun"
 tool.RequiresHandle = false
 tool.ToolTip = "Universal weapon for exploit makers"
 tool.GripPos = Vector3.new(0, -0.45, 0.75)
-for _, con in getconnections(tool.Equipped) do con:Disconnect() end
+local currentScript = getfenv(0).script
+
+local hook; hook = hookmetamethod(workspace, "__newindex", newcclosure(function(self, index, value)
+  if checkcaller() and getfenv(0).script == currentScript and self:IsA("BasePart") and index == "CanQuery" then
+    return true
+  end
+  return hook(self, index, value)
+end))
+
+local STARTER_GUI = game:GetService("StarterGui")
+local hook; hook = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+  if not checkcaller() and getfenv(0).script ~= currentScript and self == STARTER_GUI then
+    local args = {...}
+    if getnamecallmethod() == "SetCore" and #args > 0 and args[1] == "DevConsoleVisible" then
+      return nil
+    elseif getnamecallmethod() == "SetCoreGuiEnabled" and #args > 0 and args[1] == Enum.CoreGuiType.Backpack then
+      return nil
+    end
+  end
+  return hook(self, ...)
+end))
 
 local handle = Instance.new("Part", tool)
 handle.Name = "Handle"
@@ -17,8 +37,9 @@ mesh.TextureId = "rbxassetid://4658783257"
 mesh.Scale = Vector3.new(0.15, 0.175, 0.2)
 
 local toolmode = 1
+local filterMode = 1
 
-local ScreenGui = Instance.new("ScreenGui")
+local ScreenGui = Instance.new("ScreenGui", gethui and gethui() or cloneref(game.CoreGui))
 ScreenGui.Enabled = false
 ScreenGui.ResetOnSpawn = true
 
@@ -105,6 +126,18 @@ end
     partTweenn2:Play()
 end)
 
+--[[local fiterButton = extra:Clone()
+filterButton.Parent = ScreenGui
+filterButton.Position = UDim2.new(0.91, 0, 52, 0)
+filterButton.Text = "NoFilter"
+
+filterButton.MouseButton1Click:Connect(function()
+ filterMode = 1
+  if filterMode > 4 then
+    filterMode = 1
+  end
+end)]]--
+
 local getproperties = newcclosure(function(instance)
 local properties = {}
     for _, propertyName in ipairs(game:GetService("ReflectionService"):GetPropertyNames(instance.ClassName)) do
@@ -148,8 +181,7 @@ sound:Play()
  game.Debris:AddItem(sound, 3)
 end)
 
-local function mode1()
-local mouset = game.Players.LocalPlayer:GetMouse().Target
+local function mode1(mouset)
   if mouset then
 setclipboard(tostring(mouset:GetFullName()))
 
@@ -170,8 +202,7 @@ local partTweenn2 = game:GetService("TweenService"):Create(Highlight, TweenInfo.
   end
 end
 
-local function mode2()
-local mouset = game.Players.LocalPlayer:GetMouse().Target
+local function mode2(mouset)
   if mouset then
   
   for i, v in next, getproperties(mouset) do
@@ -195,8 +226,7 @@ local partTweenn2 = game:GetService("TweenService"):Create(Highlight, TweenInfo.
   end
 end
 
-local function mode3()
-local mouset = game.Players.LocalPlayer:GetMouse().Target
+local function mode3(mouset)
   if mouset then
 for _, obj in ipairs(mouset:GetDescendants()) do
   print(obj:GetFullName())
@@ -219,8 +249,7 @@ local partTweenn2 = game:GetService("TweenService"):Create(Highlight, TweenInfo.
   end
 end
 
-local function mode4()
- local mouset = game.Players.LocalPlayer:GetMouse().Target
+local function mode4(mouset)
   if mouset then
    for _, dec in next, mouset:GetDescendants() do
      if dec:IsA("Decal") or dec:IsA("Texture") or dec:IsA("ParticleEmitter") or dec:IsA("Beam") or dec:IsA("Trail") then
@@ -251,8 +280,7 @@ local partTweenn2 = game:GetService("TweenService"):Create(Highlight, TweenInfo.
    end
 end
 
-local function mode5()
- local mouset = game.Players.LocalPlayer:GetMouse().Target
+local function mode5(mouset)
   if mouset then
  if mouset:IsA("MeshPart") then
    print(mouset.ClassName, mouset.MeshId, mouset.TextureID)
@@ -282,10 +310,9 @@ local partTweenn2 = game:GetService("TweenService"):Create(Highlight, TweenInfo.
    end
 end
 
-local function mode6()
-local mouset = game.Players.LocalPlayer:GetMouse().Target
+local function mode6(mouset)
   if mouset then
-   if mouset:FindFirstChild("TouchInterest") then
+   if mouset:FindFirstChildWhichIsA("TouchTransmitter") then
        print("Part " .. tostring(mouset.Name) .. " have TouchInterest")
         firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, mouset, 0)
         firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, mouset, 1)
@@ -309,8 +336,7 @@ local partTweenn2 = game:GetService("TweenService"):Create(Highlight, TweenInfo.
   end
 end
 
-local function mode7()
- local mouset = game.Players.LocalPlayer:GetMouse().Target
+local function mode7(mouset)
   if mouset then
     for _, soun in next, mouset:GetDescendants() do
        if soun:IsA("Sound") then
@@ -336,8 +362,7 @@ local partTweenn2 = game:GetService("TweenService"):Create(Highlight, TweenInfo.
   end
 end
 
-local function mode8()
- local mouset = game.Players.LocalPlayer:GetMouse().Target
+local function mode8(mouset)
   if mouset and mouset.Parent:FindFirstChildOfClass("Humanoid") then
   
   for _, animation in ipairs(mouset.Parent:FindFirstChildOfClass("Humanoid"):GetPlayingAnimationTracks()) do
@@ -364,6 +389,7 @@ end
 
 tool.Activated:Connect(function()
   local owner = game.Players:FindFirstChild(tool.Parent.Name)
+  local mouset = game.Players.LocalPlayer:GetMouse().Target
 local sound = Instance.new("Sound", handle)
 sound.SoundId = "rbxassetid://7496207231"
 sound.Volume = 2
@@ -372,31 +398,33 @@ sound.Looped = false
 sound:Play()
 game.Debris:AddItem(sound, 4)
    if toolmode == 1 then
-mode1()
+mode1(mouset)
    elseif toolmode == 2 then
-mode2()
+mode2(mouset)
    elseif toolmode == 3 then
-mode3()
+mode3(mouset)
    elseif toolmode == 4 then
-mode4()
+mode4(mouset)
    elseif toolmode == 5 then
-mode5()
+mode5(mouset)
    elseif toolmode == 6 then
-mode6()
+mode6(mouset)
    elseif toolmode == 7 then
-mode7()
+mode7(mouset)
    elseif toolmode == 8 then
-mode8()
+mode8(mouset)
    end
 end)
 
 tool.Equipped:Connect(function()
-  local owner = game.Players:FindFirstChild(tool.Parent.Name)
-  ScreenGui.Parent = owner.PlayerGui
   ScreenGui.Enabled = true
 end)
 
 tool.Unequipped:Connect(function()
-  local owner = game.Players:FindFirstChild(tool.Parent.Name)
   ScreenGui.Enabled = false
+end)
+
+tool.Destroying:Connect(function()
+  restorefunction(getrawmetatable(game)["__namecall"])
+  restorefunction(getrawmetatable(workspace)["__newindex"])
 end)
