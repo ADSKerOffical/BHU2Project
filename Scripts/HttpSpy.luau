@@ -272,6 +272,14 @@ local hook; hook = hookmetamethod(game, "__namecall", newcclosure(function(self,
   return hook(self, ...)
 end))
 
+for _, func in next, {game.HttpGet, game.HttpGetAsync} do
+  local hook; hook = hookfunction(func, newcclosure(function(...)
+    local args = {...}
+    Log(`{getinfo(func).name}: {args[2]}`)
+    return hook(...)
+  end))
+end
+
 for _, func in {request, http and http.request} do
   local hook1; hook1 = hookfunction(request, function(dat)
     Log("request from: "..dat.Url.." ("..dat.Method..")",dat.Headers)
