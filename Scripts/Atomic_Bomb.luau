@@ -68,7 +68,7 @@ tool.Activated:Connect(function()
 
       for _, humanoid in next, humanoids do
         if isnetworkowner(humanoid.RootPart) then
-          humanoid.Heath = 0
+          humanoid.Health = 0
         end
       end
       
