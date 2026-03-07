@@ -1,61 +1,22 @@
 for i, v in next, getgc(true) do
    if typeof(v) == "table" and rawget(v, "Detected") and typeof(rawget(v, "Detected")) == "function" then
-local getinfo = getinfo or debug.getinfo
-local DEBUG = false
-local Hooked = {}
+   setthreadidentity(2)
+     local Detected, Kill = rawget(v, "Detected"), rawget(v, "Kill")
 
-local Detected, Kill
+     local hook1; hook1 = hookfunction(Detected, function(Action, Info, NoCrash)
+       return true
+     end)
 
-setthreadidentity(2)
+     if rawget(v, "Variables") and rawget(v, "Process") and typeof(Kill) == "function" then
+       local hook2; hook2 = hookfunction(Kill, function(info) end)
+   end 
 
-for i, v in getgc(true) do
-    if typeof(v) == "table" then
-        local DetectFunc = rawget(v, "Detected")
-        local KillFunc = rawget(v, "Kill")
-    
-        if typeof(DetectFunc) == "function" and not Detected then
-            Detected = DetectFunc
-            
-            local Old; Old = hookfunction(Detected, function(Action, Info, NoCrash)
-                if Action ~= "_" then
-                    if DEBUG then
-                        warn("Adonis AntiCheat flagged\nMethod: {Action}\nInfo: {Info}")
-                    end
-                end
-                
-                return true
-            end)
-
-            table.insert(Hooked, Detected)
-        end
-
-        if rawget(v, "Variables") and rawget(v, "Process") and typeof(KillFunc) == "function" and not Kill then
-            Kill = KillFunc
-            local Old; Old = hookfunction(Kill, function(Info)
-                if DEBUG then
-                    warn("Adonis AntiCheat tried to kill (fallback): {Info}")
-                end
-            end)
-
-            table.insert(Hooked, Kill)
-        end
-    end
-end
-
-local Old; Old = hookfunction(getrenv().debug.info, newcclosure(function(...)
-    local LevelOrFunc, Info = ...
-
-    if Detected and LevelOrFunc == Detected then
-        if DEBUG then
-            warn("zins | adonis bypassed")
-        end
-
+  local hook3; hook3 = hookfunction(getrenv().debug.info, newcclosure(function(...)
+      local lineorf = ...
+      if Detected and lineorf == Detected then
         return coroutine.yield(coroutine.running())
-    end
-    
-    return Old(...)
-end))
-
-setthreadidentity(7)
-  end
+      end
+      return hook3(...)
+    end))
+  end 
 end
