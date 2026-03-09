@@ -6,7 +6,6 @@ writefile(soundId, "https://www.soundjay.com/mechanical_c2026/tv-static-01.mp3")
 
 if game:GetService("GuiService"):GetGameplayPausedNotificationEnabled() then
   game:GetService("GuiService"):SetGameplayPausedNotificationEnabled(false)
-  workspace.StreamingIntegrityMod = Enum.StreamingIntegrityMod.Default
 end
 
 for _, part in next, game.Players.LocalPlayer.Character:GetDescendants() do
