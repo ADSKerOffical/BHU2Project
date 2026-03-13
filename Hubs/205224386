@@ -1,0 +1,34 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Hide and seek", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+local function getSeeker()
+  for _, plr in next, game.Players:GetPlayers() do
+    if plr.Character and plr.Character:FindFirstChild("ItScript") then
+      return plr
+    end
+  end
+  return nil
+end
+
+tab.newLabel("Hider")
+
+tab.newButton("Get all coins", "You get all the coins on the map", function()
+  for _, coin in next, workspace.GameObjects:GetChildren() do
+    if coin:IsA("BasePart") and coin.Name == "Credit" then
+      firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, coin, 0)
+    end
+  end
+end)
+
+tab.newLabel("Seeker")
+
+tab.newButton("Kill all", "Touches you with all the players", function()
+    for _, plr in next, game.Players:GetPlayers() do
+       if plr ~= game.Players.LocalPlayer and plr.Character and plr.Character:FindFirstChildWhichIsA("BasePart") then
+         firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, plr.Character:FindFirstChildWhichIsA("BasePart"), 0)
+       end
+    end
+end)
