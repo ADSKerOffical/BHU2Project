@@ -1,0 +1,102 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Budgie Hub | Legends of speed",
+    SubTitle = "by ADSKer",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = ""})
+}
+
+Tabs.Main:AddToggle("Defense", {
+  Title = "Auto farm orbs",
+  Description = "You get orbs quickly",
+  Default = false,
+  Callback = function(Value)
+     local sh = 0
+     jdj = Value
+while jdj do
+   sh += 1
+   task.spawn(function()
+   game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("orbEvent"):FireServer("collectOrb", "Ethereal Orb", game.Players.LocalPlayer.currentMap.Value)
+  end)
+
+  if sh >= 10 then
+    sh = 0
+    task.wait()
+  end
+end
+  end
+})
+
+Tabs.Main:AddToggle("Defense", {
+  Title = "Auto farm gems",
+  Description = "You get gems quickly",
+  Default = false,
+  Callback = function(Value)
+     local sh = 0
+     heu = Value
+while heu do
+   sh += 1
+   task.spawn(function()
+   game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("orbEvent"):FireServer("collectOrb", "Infernal Gem", game.Players.LocalPlayer.currentMap.Value)
+  end)
+
+  if sh >= 10 then
+    sh = 0
+    task.wait()
+  end
+end
+  end
+})
+
+Tabs.Main:AddToggle("Defense", {
+  Title = "Auto hoops",
+  Description = "You touch all the hops",
+  Default = false,
+  Callback = function(Value)
+     sge = Value
+     while sge and task.wait(0.1) do
+  for _, part in next, Workspace.Hoops: GetChildren() do
+    if part:IsA("BasePart") then
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, part, 0)
+    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, part, 1)
+      end
+   end
+end
+  end
+})
+
+Tabs.Main:AddToggle("Defense", {
+  Title = "Instant win",
+  Description = "You instantly find yourself at the finish line if you are in a race. Activate this before you come to the race",
+  Default = false,
+  Callback = function(Value)
+  ske = Value
+local Ihe = game.Players.LocalPlayer.currentMap:GetPropertyChangedSignal("Value"):Connect(function()
+  local mapname = string.split(game.Players.LocalPlayer.currentMap.Value, " ")
+  local realmapname = ""
+  if string.find(game.Players.LocalPlayer.currentMap.Value, "Race") then
+  
+   if string.find(game.Players.LocalPlayer.currentMap.Value, "Grass") then
+     realmapname = string.gsub(string.split(game.Players.LocalPlayer.currentMap.Value, " ")[1], "Grass", "Grassland")
+    else
+     realmapname = mapname[1]
+   end
+    repeat task.wait() until (game.Workspace.raceMaps:FindFirstChild(realmapname):FindFirstChild("finishPart") and game.Workspace.raceMaps:FindFirstChild(realmapname).finishPart.CanTouch == true)
+    
+    game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(0.04, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {
+       CFrame = game.Workspace.raceMaps:FindFirstChild(realmapname).finishPart.CFrame
+    }):Play()
+  end
+ end)
+ task.spawn(function() repeat task.wait() until ske == false lke:Disconnect() end)
+  end
+})
+-- 3101667897
