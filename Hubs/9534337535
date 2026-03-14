@@ -1,0 +1,86 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | Shrek in the Backrooms", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Scripts/Adonis%20Bypass"))()
+setthreadidentity(8)
+
+local rem
+local EnableOneShot = false
+local hook; hook = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+  if EnableOneShot == true and not checkcaller() and typeof(self) == "Instance" and self.ClassName == "RemoteEvent" and self.IsDescendantOf(self, game.ReplicatedStorage.Communication) then
+    local args = {...}
+    if #args == 3 and (typeof(args[1]) == "Instance" and args[1] == game.Players.LocalPlayer.Character.FindFirstChildOfClass(game.Players.LocalPlayer.Character, "Tool")) and typeof(args[2]) == "Instance" and args[2].IsDescendantOf(args[2], workspace.Monsters) and typeof(args[3]) == "Vector3" then
+       for _ = 1, 50 do self.FireServer(self, unpack(args)) end
+       rem = self
+     elseif #args == 2 and (typeof(args[1]) == "Instance" and args[1] == game.Players.LocalPlayer.Character.FindFirstChildOfClass(game.Players.LocalPlayer.Character, "Tool")) and typeof(args[2]) == "Instance" and args[2].IsDescendantOf(args[2], workspace.Monsters) then
+       for _ = 1, 50 do self.FireServer(self, unpack(args)) end
+       rem = self
+    end
+  end
+  return hook(self, ...)
+end))
+
+tab.newInput("Reach weapons", "Increases the hitbox of your weapons", function(text)
+    for _, tool in next, game.Players.LocalPlayer.Backpack:GetChildren() do
+  if tool:IsA("Tool") and tool:FindFirstChild("ReplicatedComponents") then
+    for _, part in next, tool:GetDescendants() do
+      if part:IsA("BasePart") then
+        part.Size = Vector3.new(tonumber(text), tonumber(text), tonumber(text))
+        part.CanTouch = false
+        part.Massless = true
+        Instance.new("SelectionBox", part).Adornee = part
+      end
+    end
+  end
+end
+end)
+
+tab.newToggle("Oneshot weapons", "Every hit you make with your weapon kills any entity with one hit", false, function(toggleState)
+    EnableOneShot = toggleState
+end)
+
+tab.newToggle("Kill aura", "Entities near you die very quickly. First, hit someone with \"Oneshot weapons\"", false, function(toggleState)
+    euhe = toggleState
+    while euhe and task.wait() do
+      local humanoids = {}
+for _, part in next, workspace:GetPartBoundsInRadius(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, 10) do
+    if part.Parent:IsA("Model") and part.Parent:FindFirstChildOfClass("Humanoid") and not part:IsDescendantOf(game.Players.LocalPlayer.Character) then
+      if not table.find(humanoids, part.Parent:FindFirstChildOfClass("Humanoid")) then
+        table.insert(humanoids, part.Parent:FindFirstChildOfClass("Humanoid"))
+      end
+    end
+  end
+
+      for _, humanoid in next, humanoids do
+         rem:FireServer(game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"), humanoid.Parent)
+      end
+    end
+end)
+
+tab.newToggle("Collect all coins", "Collects all coins on loaded maps", false, function(toggleState)
+   dhh = toggleState
+     local con = game:GetService("RunService").RenderStepped:Connect(function()
+  for _, part in next, workspace.Coins: GetDescendants() do
+    if part:IsA("BasePart") and part.Name == "Coin" then
+      firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, part, 0)
+    end
+  end
+  end)
+  task.spawn(function() repeat task.wait() until dhh == false con:Disconnect() end)
+end)
+
+tab.newButton("Complete all levels (lag warning)", "You will complete all levels at once", function()
+    local levellist = {}
+for _, txt in next, game.Players.LocalPlayer.PlayerGui.TeleportChooser:GetDescendants() do
+  if txt:IsA("TextLabel") then
+    table.insert(levellist, txt.Parent.Name)
+  end
+end
+
+  for _, name in levellist do
+    game.ReplicatedStorage.Remotes.NewMap:FireServer("Enter", name)
+  end
+end)
