@@ -1,0 +1,13 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+local Tab = library:Tab("Budgie Hub")
+
+Tab:Button("Kill all", function()
+   for _, plr in next, game.Players:GetPlayers() do
+  if plr ~= game.Players.LocalPlayer then
+    for _ = 1, 10 do
+      game.ReplicatedStorage.Remotes.SendRagdollRemote:FireServer({plr}, 2, "Left")
+    end
+  end
+end
+end)
