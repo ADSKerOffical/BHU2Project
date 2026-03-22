@@ -1,0 +1,195 @@
+local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Resources/FluentCopy.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Budgie Hub | Backrooms Redacted",
+    SubTitle = "by ADSKer",
+    TabWidth = 160,
+    Size = UDim2.new(0.7, 0, 1, 0),
+    Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Darker",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "settings" })
+}
+
+local hook; hook = hookmetamethod(game.Players.LocalPlayer, "__newindex", newcclosure(function(self, index, value)
+  if not checkcaller() and typeof(self) == "Instance" and self:IsA("Humanoid") and self:IsDescendantOf(game.Players.LocalPlayer.Character) then
+    if index == "WalkSpeed" or index == "JumpHeight" then
+       return 16
+    elseif index == "JumpPower" then
+       return 50
+    elseif index == "HipHeight" then
+      return 0
+    end
+  end
+  return hook(self, index, value)
+end))
+
+Tabs.Main:AddToggle("sj", {
+ Title = "Show teleporters",
+ Description = "Shows all locations where teleports are located",
+ Default = false,
+ Callback = function(Value)
+   heu = Value
+      for _, part in next, workspace:GetChildren() do
+  if part:IsA("BasePart") and part.Name == "teleporte" or part.Parent.Name:find("Teleporters") or part.Name:lower():find("teleportpart") or part:FindFirstChildOfClass("TouchTransmitter") or part.Parent.Name:lower():find("props") and not part.Parent:FindFirstChildOfClass("Humanoid") or (part:FindFirstChildOfClass("BillboardGui") and part:FindFirstChildOfClass("BillboardGui").ImageLabel.Image == "rbxassetid://12966849577") then
+    local billboard = Instance.new("BillboardGui", part)
+    billboard.Size = UDim2.new(1, 0, 1, 0)
+    billboard.MaxDistance = math.huge
+    billboard.Adornee = part
+    billboard.AlwaysOnTop = true
+
+    local tex = Instance.new("ImageLabel", billboard)
+    tex.Size = UDim2.new(3, 0, 3, 0)
+    tex.BackgroundTransparency = 0
+    tex.BackgroundColor3 = Color3.new(0, 0, 0)
+    tex.Image = "rbxassetid://12966849577"
+    
+    task.spawn(function()
+      repeat task.wait(0.1) until heu == false
+      billboard:Destroy()
+    end)
+  end
+end
+   end    
+})
+
+Tabs.Main:AddToggle("ueh", {
+ Title = "Comeback after death",
+ Description = "After death you return to the same place",
+ Default = false,
+ Callback = function(Value)
+     eihbe, boke = game.Players.LocalPlayer.Character.Humanoid.Died:Connect(function()
+       local hwh = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+       local queueonteleport = queueonteleport or queue_on_teleport
+       queueonteleport(`game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new({hwh})`)
+       game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+     end), Value
+     
+     task.spawn(function()
+       repeat task.wait() until boke == false
+       eihbe:Disconnect()
+     end)
+   end    
+})
+
+Tabs.Main:AddToggle("he", {
+ Title = "High speed",
+ Description = "You move quickly using teleportation and anti-cheat does not see it",
+ Default = false,
+ Callback = function(Value)
+     loe = Value
+getgenv().TpWalking = loe
+getgenv().Speed = 7
+
+local speaker = game:GetService("Players").LocalPlayer
+local chr = speaker.Character
+local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+local hb = game:GetService("RunService").Heartbeat
+while getgenv().TpWalking and chr and hum and hum.Parent do
+    local delta = hb:Wait()
+    if hum.MoveDirection.Magnitude > 0 then
+        chr:TranslateBy(hum.MoveDirection * tonumber(getgenv().Speed) * delta * 10)
+    else
+        chr:TranslateBy(hum.MoveDirection * delta * 10)
+    end
+end
+   end    
+})
+
+Tabs.Main:AddButton({
+ Title = "Fullbright",
+ Description = "Highlighting everything",
+ Callback = function()
+     local con = game.Lighting.Changed:Connect(function()
+     game.Lighting.Ambient = Color3.new(1, 1, 1)
+     game.Lighting.ColorShift_Bottom = Color3.new(1, 1, 1)
+     game.Lighting.ColorShift_Top = Color3.new(1, 1, 1)
+     game.Lighting.GlobalShadows = false
+     game.Lighting.FogEnd = math.huge
+     game.Lighting.FogStart = math.huge
+     game.Lighting.TimeOfDay = "12:34:43"
+     
+     for _, ligh in next, game.Lighting:GetDescendants() do
+       if ligh:IsA("PostEffect") then
+         ligh:Destroy()
+       end
+     end
+    end)
+  game.Lighting.TimeOfDay = "12:34:43"
+   end    
+})
+
+Tabs.Main:AddToggle("MyToggle", {
+  Title = "Kill nearest npcs",
+  Description = "Kills nearby entities (does not guarantee). NPC, Kill",
+  Default = false,
+  Callback = function(Value)
+    yoo = Value
+while yoo and task.wait() do
+ if workspace:FindFirstChild(game.Players.LocalPlayer.Name) and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+   local parts = workspace:GetPartBoundsInRadius(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, 50)
+    for _, part in next, parts do
+      if part.Anchored == false and not game.Players:GetPlayerFromCharacter(part.Parent) and part.Parent:FindFirstChildOfClass("Humanoid") then
+       local humanoid = part.Parent:FindFirstChildOfClass("Humanoid")
+        game.Players.LocalPlayer.SimulationRadius = math.huge
+        
+        humanoid.Health = 0
+        humanoid:TakeDamage(math.huge)
+        humanoid:ChangeState("Dead") 
+        humanoid.WalkSpeed = 0
+        humanoid.JumpPower = 0
+        humanoid.JumpHeight = 0
+        humanoid.Sit = true
+        humanoid.PlatformStand = true
+        humanoid.EvaluateStateMachine = false
+        humanoid:UnequipTools()
+        
+        replicatesignal(humanoid.ServerBreakJoints)
+        
+        for _, part in next, humanoid.Parent:GetDescendants() do
+           if part:IsA("BasePart") then
+   part.CanCollide = false
+   part.CanTouch = false
+   sethiddenproperty(part, "LocalSimulationValidation", 0)
+   part.Velocity = Vector3.new(0, -1000, 0)
+   part.AssemblyAngularVelocity = Vector3.new(0, -1000, 0)
+   part.AssemblyLinearVelocity = Vector3.new(0, -1000, 0)
+           end
+        end
+      end
+    end
+  end
+ end
+  end
+})
+
+Tabs.Main:AddButton({
+ Title = "Subplace finder",
+ Description = "My special gui with which you can navigate between subplaces in this place",
+ Callback = function()
+     local request, link = (request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request) or http_request or HttpPost), "https://raw.githubusercontent.com/ADSKerOffical/BHUOriginal/refs/heads/main/Guis/SubplaceFinder"
+(loadstring or load or (getgenv and typeof(getgenv()) == "table" and table.find(getgenv(), "loadstring") ~= nil and getgenv().loadstring))((request and request({Url = tostring(link), Method = "GET",}).Body) or game:HttpGet(tostring(link)))()
+   end    
+})
+
+local function CPDP()
+  for _, plr in next, game.Players:GetPlayers() do
+    if plr ~= game.Players.LocalPlayer and plr == game.CreatorId or plr:IsFriendsWith(game.CreatorId) then
+      return true, plr.Name
+    end
+  end
+  return false
+end
+
+if CPDP() then
+  local bool, name = CPDP()
+  Flient:MakeNotification({
+	Title = "Budgie Hub",
+	Content = `A player has been detected who can expose you or ban you, namely {name}, It\'s better not to use the script when it\'s present`,
+	Duration = nil
+  })
+end
+-- place: 12991181811, game: 3532628446
