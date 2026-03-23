@@ -1,0 +1,29 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+
+local window = DrRayLibrary:Load("Budgie Hub | 3008", "Default")
+
+local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+
+tab.newToggle("Anti fall damage", "You don\'t take fall damage", false, function(toggleState)
+    Ehhe = toggleState
+   while Ehhe and task.wait() do
+     if game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.Magnitude >= 4.5 and game.Players.LocalPlayer.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+   game.Players.LocalPlayer.Character.Humanoid:ChangeState("Landed")
+   end
+  end
+end)
+
+tab.newButton("Collect all food", "You collect all the food", function()
+   local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    local storage = string.split(game.Players.LocalPlayer.PlayerGui.MainGui.Menus.Inventory.UpperLine.Storage.Text, "/")
+local current, max = storage[1], storage[2]:gsub("%D", "")
+
+for _, food in next, Workspace.GameObjects.Physical.Map:GetDescendants() do
+  if food:IsA("Model") and food.Parent.Name == "Items" and food:FindFirstChildOfClass("MeshPart") and table.find({"Apple", "Lemon", "Cookie", "Ice Cream", "Dr. Bob Soda"}, food.Name) then
+   if tonumber(current) >= tonumber(max) then break end
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = food:FindFirstChildWhichIsA("BasePart").CFrame
+game:GetService("Players").LocalPlayer.Character.System.Action:InvokeServer("Store", {Model = food})
+  end
+end
+  game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
