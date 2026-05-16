@@ -1,8 +1,18 @@
-local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
-local window = DrRayLibrary:Load("Budgie Hub | Shrek in the Backrooms", "Default")
+local Window = Fluent:CreateWindow({
+    Title = "Budgie Hub | Shrek in the Backrooms",
+    SubTitle = "by ADSKer",
+    TabWidth = 160,
+    Size = UDim2.new(0.7, 0, 1, 0),
+    Acrylic = false,
+    Theme = "Darker",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
 
-local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+}
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/ADSKerOffical/BHU2Project/refs/heads/main/Scripts/Adonis%20Bypass"))()
 setthreadidentity(8)
@@ -23,7 +33,14 @@ local hook; hook = hookmetamethod(game, "__namecall", newcclosure(function(self,
   return hook(self, ...)
 end))
 
-tab.newInput("Reach weapons", "Increases the hitbox of your weapons", function(text)
+local Input = Tabs.Main:AddInput("Input", {
+    Title = "Reach weapons",
+    Description = "Adjust the range of your weapons",
+    Default = "",
+    Placeholder = "double",
+    Numeric = false,
+    Finished = false,
+    Callback = function(text)
     for _, tool in next, game.Players.LocalPlayer.Backpack:GetChildren() do
   if tool:IsA("Tool") and tool:FindFirstChild("ReplicatedComponents") then
     for _, part in next, tool:GetDescendants() do
@@ -36,17 +53,28 @@ tab.newInput("Reach weapons", "Increases the hitbox of your weapons", function(t
     end
   end
 end
-end)
+end
+})
 
-tab.newToggle("Oneshot weapons", "Every hit you make with your weapon kills any entity with one hit", false, function(toggleState)
+local Toggle = Tabs.Main:AddToggle("MyToggle", {
+    Title = "Oneshot weapons", 
+    Description = "You can kill any entity with one hit",
+    Default = false,
+    Callback = function(toggleState)
     EnableOneShot = toggleState
-end)
+  end
+})
 
-tab.newToggle("Kill aura", "Entities near you die very quickly. First, hit someone with \"Oneshot weapons\"", false, function(toggleState)
+local Toggle = Tabs.Main:AddToggle("MyToggle", {
+    Title = "Kill aura", 
+    Description = "Entities near you die very quickly. First, hit someone with \"Oneshot weapons\"",
+    Default = false,
+    Callback = function(toggleState)
     euhe = toggleState
     while euhe and task.wait() do
+     if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") and rem ~= nil then
       local humanoids = {}
-for _, part in next, workspace:GetPartBoundsInRadius(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, 10) do
+for _, part in next, workspace:GetPartBoundsInRadius(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, 15) do
     if part.Parent:IsA("Model") and part.Parent:FindFirstChildOfClass("Humanoid") and not part:IsDescendantOf(game.Players.LocalPlayer.Character) then
       if not table.find(humanoids, part.Parent:FindFirstChildOfClass("Humanoid")) then
         table.insert(humanoids, part.Parent:FindFirstChildOfClass("Humanoid"))
@@ -58,9 +86,15 @@ for _, part in next, workspace:GetPartBoundsInRadius(game.Players.LocalPlayer.Ch
          rem:FireServer(game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"), humanoid.Parent)
       end
     end
-end)
+   end
+  end
+})
 
-tab.newToggle("Collect all coins", "Collects all coins on loaded maps", false, function(toggleState)
+local Toggle = Tabs.Main:AddToggle("MyToggle", {
+    Title = "Collect all coins", 
+    Description = "Collect all the coins on the downloaded maps",
+    Default = false,
+    Callback = function(toggleState)
    dhh = toggleState
      local con = game:GetService("RunService").RenderStepped:Connect(function()
   for _, part in next, workspace.Coins: GetDescendants() do
@@ -70,9 +104,13 @@ tab.newToggle("Collect all coins", "Collects all coins on loaded maps", false, f
   end
   end)
   task.spawn(function() repeat task.wait() until dhh == false con:Disconnect() end)
-end)
+  end
+})
 
-tab.newButton("Complete all levels (lag warning)", "You will complete all levels at once", function()
+Tabs.Main:AddButton({
+    Title = "Complete all levels",
+    Description = "You complete all the levels, BUT there will be very strong lags, so rejoin",
+    Callback = function()
     local levellist = {}
 for _, txt in next, game.Players.LocalPlayer.PlayerGui.TeleportChooser:GetDescendants() do
   if txt:IsA("TextLabel") then
@@ -83,4 +121,21 @@ end
   for _, name in levellist do
     game.ReplicatedStorage.Remotes.NewMap:FireServer("Enter", name)
   end
-end)
+ end
+})
+
+Tabs.Main:AddButton({
+    Title = "Search all",
+    Description = "Unpack all the lockers",
+    Callback = function()
+        local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+for _, v in next, Workspace.SearchItems:GetDescendants() do
+   if v:IsA("ProximityPrompt") then
+    local prop = (v.Parent:IsA("BasePart") and "CFrame") or (v.Parent:IsA("Model") and "WorldPivot")
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Parent[prop]
+    fireproximityprompt(v, 0)
+  end
+end
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+    end
+})
