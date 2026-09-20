@@ -4,6 +4,30 @@ local window = DrRayLibrary:Load("Budgie Hub | SCP Games and SCP Monsters", "Def
 
 local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
 
+local specIndex
+local cum = game.Players.LocalPlayer.Character.ChildAdded:Connect(function(inst)
+   if inst:IsA("Tool") and inst.Name == "Glock" and inst:FindFirstChild("HandgunScript") and specIndex == nil then
+      specIndex = getupvalue(getsenv(inst.HandgunScript).OnFire, 14)
+      cum:Disconnect()
+   end
+end)
+
+local function isnetworkowner(part)
+   return (part.ReceiveAge == 0 and gethiddenproperty(part, "NetworkIsSleeping") == false)
+end
+
+local glockTool
+local function getGlockInstanceFromAny()
+   for _, player in next, game.Players:GetPlayers() do
+      if player.Character and player.Character:FindFirstChildOfClass("Tool") and player.Character:FindFirstChildOfClass("Tool").Name == "Glock" and player.Character:FindFirstChildOfClass("Tool"):FindFirstChild("Event", true) then
+          return player.Character:FindFirstChildOfClass("Tool")
+      end
+      if player:FindFirstChild("Backpack") and player.Backpack:FindFirstChild("Glock") and player.Backpack.Glock:FindFirstChild("Event", true) then
+          return player.Backpack.Glock
+      end
+   end
+end
+
 tab.newButton("Get glock", "You get a Glock for further functions", function()
     local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
     repeat task.wait()
@@ -14,13 +38,14 @@ tab.newButton("Get glock", "You get a Glock for further functions", function()
 end)
 
 tab.newButton("Kill all", "You kill all players with a glock", function()
-    if game.Players.LocalPlayer.Backpack:FindFirstChild("Glock") then
-      game.Players.LocalPlayer.Backpack:FindFirstChild("Glock").Parent = game.Players.LocalPlayer.Character
-   end
+    if glockTool == nil or not glockTool:FindFirstChild("Event") then
+        glockTool = getGlockInstanceFromAny()
+    end
+    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Glock") or game.Players.LocalPlayer.Character:FindFirstChild("Glock") or glockTool
    
    for _, plr in next, game.Players:GetPlayers() do
-  if plr ~= game.Players.LocalPlayer and workspace:FindFirstChild(plr.Name) and plr.Character:FindFirstChildOfClass("Humanoid") then
-    for _ = 1, 5 do game.Players.LocalPlayer.Character.Glock.Event:FireServer(plr.Character.Humanoid, "Glock", getupvalue(getsenv(game.Players.LocalPlayer.Character.Glock.HandgunScript).OnFire, 14)) end
+  if plr ~= game.Players.LocalPlayer and plr.UserId ~= 4636830533 and workspace:FindFirstChild(plr.Name) and plr.Character:FindFirstChildOfClass("Humanoid") then
+    for _ = 1, 5 do tool.Event:FireServer(plr.Character.Humanoid, "Glock", specIndex) end
   end
 end
 end)
@@ -37,5 +62,186 @@ tab.newButton("Modify glock", "Glock shoots without reloading, without the need 
       for _ = 1, 20 do
         game.Players.LocalPlayer.Character.Glock.Event:FireServer(game.Players.LocalPlayer:GetMouse().Target.Parent:IsA("Model") and game.Players.LocalPlayer:GetMouse().Target.Parent:FindFirstChildOfClass("Humanoid"), "Glock", getupvalue(getsenv(game.Players.LocalPlayer.Character.Glock.HandgunScript).OnFire, 14))
       end
+    end)
+end)
+
+tab.newInput("Kill player", "Kill the player by his name or display name", function(text)
+    if glockTool == nil or not glockTool:FindFirstChild("Event") then
+      glockTool = getGlockInstanceFromAny()
+    end
+
+    for _, player in next, game.Players:GetPlayers() do
+      if (string.find(player.Name:lower(), text:lower()) or string.find(player.DisplayName:lower(), text:lower())) and player ~= game.Players.LocalPlayer and player.UserId ~= 4636830533 then
+        hum = player.Character:WaitForChild("Humanoid")
+        for _ = 1, 20 do
+          glockTool.Event:FireServer(hum, "Glock", specIndex)
+        end
+        break
+      end
+    end
+end)
+
+
+
+tab.newButton("The core of suffering", "For this to work, get a glock at least once and it would be advisable to have a glock with you", function()
+    if glockTool == nil or not glockTool:FindFirstChild("Event") then
+       glockTool = getGlockInstanceFromAny()
+    end
+    
+    local tool = Instance.new("Tool", game.Players.LocalPlayer:WaitForChild("Backpack"))
+    tool.Name = "The core of suffering" 
+    tool.ToolTip = "Annihilates anyone who stands in the way of the sphere"
+
+    local handle = Instance.new("Part", tool)
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1.5, 1.5, 1.5)
+    handle.BrickColor = BrickColor.new(Color3.new(0.1, 0, 0.1))
+    handle.Shape = "Ball"
+    handle.Material = "Neon"
+    
+    local screenGui = Instance.new("ScreenGui", game.CoreGui)
+    screenGui.ResetOnSpawn = false
+    screenGui.Enabled = false
+    
+    local Button = Instance.new("TextButton")
+    Button.Name = "Wawa"
+    Button.Size = UDim2.new(0.04, 0.04, 0.04, 4)
+    Button.Position = UDim2.new(0.76, 0, 0.6, 0)
+    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextScaled = true
+    Button.Text = "A wave of true madness"
+    Button.Parent = screenGui
+    
+    local cooldown = 0
+    Button.MouseButton1Click:Connect(function()
+       if tick() - cooldown >= 10 then
+          cooldown = tick()
+          sphere = handle:Clone()
+          sphere:ClearAllChildren()
+          sphere.Parent = workspace
+          sphere.Anchored = true
+          game.Debris:AddItem(sphere, 10)
+          
+          sphere.Touched:Connect(function(hit)
+             if hit.Parent:FindFirstChildOfClass("Humanoid") and hit.Parent:FindFirstChildOfClass("Humanoid").Health > 0 and not hit:IsDescendantOf(game.Players.LocalPlayer.Character) then
+                local humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
+                glockTool.Event:FireServer(humanoid, "Glock", specIndex)
+             end
+          end)
+          
+          task.spawn(function()
+          repeat task.wait(0.05)
+             local humanoids = {}
+for _, part in next, workspace:GetPartBoundsInRadius(sphere.Position, (sphere.Size.X + sphere.Size.Y + sphere.Size.Z) / 3) do
+    if part.Parent:IsA("Model") and part.Parent:FindFirstChildOfClass("Humanoid") and not part:IsDescendantOf(game.Players.LocalPlayer.Character) then
+      if not table.find(humanoids, part.Parent:FindFirstChildOfClass("Humanoid")) then
+        table.insert(humanoids, part.Parent:FindFirstChildOfClass("Humanoid"))
+      end
+    end
+  end
+
+for _, humanoid in next, humanoids do
+   glockTool.Event:FireServer(humanoid, "Glock", specIndex)
+end
+   until not sphere or sphere.Parent == nil 
+          end)
+          
+          game:GetService("TweenService"):Create(sphere, TweenInfo.new(10, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0), {
+             Size = Vector3.new(200, 200, 200)
+          }):Play()
+          
+          task.delay(8, function()
+             if sphere then
+                game:GetService("TweenService"):Create(sphere, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {
+                   Transparency = 1
+                }):Play()
+             end
+          end)
+          
+          local sound = Instance.new("Sound", sphere)
+          sound.SoundId = "http://www.roblox.com/asset/?id=11984351"
+          sound.Volume = 1.5
+          sound.PlaybackSpeed = 0.5
+          sound:Play()
+          game.Debris:AddItem(sound, 6)
+       end
+    end)
+
+    local loop = Instance.new("Sound", handle)
+    loop.SoundId = "rbxassetid://112878221721234"
+    loop.Looped = true
+
+    local core = Instance.new("Attachment", handle)
+
+    local particle = Instance.new("ParticleEmitter", core)
+    particle.Texture = "rbxassetid://85956657392054"
+    particle.Size = NumberSequence.new(1.1, 1.1)
+    particle.Speed = NumberRange.new(0, 0)
+    particle.LockedToPart = true
+    particle.Color = ColorSequence.new(Color3.new(0, 0, 0), Color3.new(0, 0, 0))
+    particle.RotSpeed = NumberRange.new(-360, 360)
+    particle.Lifetime = NumberRange.new(0.05, 0.05)
+    particle.Shape = "Sphere"
+    particle.Rate = 25
+    
+    tool.Activated:Connect(function()
+        if glockTool == nil or not glockTool:FindFirstChild("Event") then
+           glockTool = getGlockInstanceFromAny()
+        end
+        
+        local pos = game.Players.LocalPlayer:GetMouse().Hit
+        local target = game.Players.LocalPlayer:GetMouse().Target
+
+        if target and target.Parent:IsA("Model") and target.Parent:FindFirstChildOfClass("Humanoid") then
+           local humanoid = target.Parent:FindFirstChildOfClass("Humanoid")
+           for _ = 1, 250 do
+               glockTool.Event:FireServer(humanoid, "Glock", specIndex)
+           end
+           
+           if not game.Players:GetPlayerFromCharacter(humanoid.Parent) then
+              game.Players.LocalPlayer.SimulationRadius = math.huge
+              if isnetworkowner(humanoid.RootPart) then
+                 
+              end
+           end
+        end
+        
+        local sound = Instance.new("Sound", handle)
+        sound.SoundId = "rbxassetid://126117582247178"
+        sound:Play()
+        game.Debris:AddItem(sound, 5)
+        
+        local shoot = Instance.new("Part", workspace)
+        shoot.Anchored = true
+        shoot.CanCollide = false
+        shoot.CanTouch = false
+        shoot.CanQuery = false
+        shoot.Transparency = 1
+        shoot.Position = handle.Position
+        shoot.Size = Vector3.new(1, 1, (handle.Position - pos.Position).Magnitude)
+        shoot.CFrame = CFrame.lookAt(handle.Position, pos.Position) * CFrame.new(0, 0, -(handle.Position - pos.Position).Magnitude / 2)
+        game.Debris:AddItem(shoot, 5)
+        
+        local orbs = Instance.new("ParticleEmitter", shoot)
+        orbs.Enabled = false
+        orbs.Lifetime = NumberRange.new(0.5, 0.5)
+        orbs.Speed = NumberRange.new(0, 0)
+        orbs.Texture = particle.Texture
+        orbs.Color = particle.Color
+        orbs.Size = NumberSequence.new(0, 1)
+        orbs.RotSpeed = NumberRange.new(-360, 360)
+        orbs.Transparency = NumberSequence.new(0, 1)
+        orbs.Shape = "Sphere"
+        orbs:Emit((handle.Position - pos.Position).Magnitude * 2)
+        game.Debris:AddItem(orbs, 3)
+    end)
+
+    tool.Equipped:Connect(function()
+      loop.Playing = true
+      screenGui.Enabled = true
+         tool.Unequipped:Wait()
+      loop.Playing = false
+      screenGui.Enabled = false
     end)
 end)
