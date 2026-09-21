@@ -6,11 +6,8 @@ local tab = DrRayLibrary.newTab("Main", "rbxassetid://1129583422")
 
 local specIndex
 local cum = game.Players.LocalPlayer.Backpack.ChildAdded:Connect(function(inst)
-   if inst:IsA("Tool") and inst.Name == "Glock" and inst:FindFirstChild("HandgunScript") and specIndex == nil then
+   if inst:IsA("Tool") and inst.Name == "Glock" and inst:FindFirstChild("HandgunScript") then
       specIndex = getupvalue(getsenv(inst.HandgunScript).OnFire, 14)
-      if cum then
-         cum:Disconnect()
-      end
    end
 end)
 -- https://
@@ -21,11 +18,17 @@ end
 
 local glockTool
 local function getGlockInstanceFromAny()
+   if game.Players.LocalPlayer.Backpack:FindFirstChild("Glock") or game.Players.LocalPlayer.Character:FindFirstChild("Glock") then
+      specIndex = getupvalue(getsenv((game.Players.LocalPlayer.Backpack:FindFirstChild("Glock") or game.Players.LocalPlayer.Character:FindFirstChild("Glock")).HandgunScript).OnFire, 14)
+      return (game.Players.LocalPlayer.Backpack:FindFirstChild("Glock") or game.Players.LocalPlayer.Character:FindFirstChild("Glock"))
+   end
    for _, player in next, game.Players:GetPlayers() do
       if player.Character and player.Character:FindFirstChildOfClass("Tool") and player.Character:FindFirstChildOfClass("Tool").Name == "Glock" and player.Character:FindFirstChildOfClass("Tool"):FindFirstChild("Event", true) then
+          specIndex = getupvalue(getsenv(player.Character.Glock.HandgunScript).OnFire, 14)
           return player.Character:FindFirstChildOfClass("Tool")
       end
       if player:FindFirstChild("Backpack") and player.Backpack:FindFirstChild("Glock") and player.Backpack.Glock:FindFirstChild("Event", true) then
+          specIndex = getupvalue(getsenv(player.Backpack.Glock.HandgunScript).OnFire, 14)
           return player.Backpack.Glock
       end
    end
