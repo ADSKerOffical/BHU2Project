@@ -10,10 +10,26 @@ local cum = game.Players.LocalPlayer.Backpack.ChildAdded:Connect(function(inst)
       specIndex = getupvalue(getsenv(inst.HandgunScript).OnFire, 14)
    end
 end)
--- https://
+-- With love from ADSKer❤️🦜
 
 local function isnetworkowner(part)
    return (part.ReceiveAge == 0 and gethiddenproperty(part, "NetworkIsSleeping") == false)
+end
+
+local getcustomasset = getcustomasset or getsynasset
+local isfolder = isfolder
+local isfile = isfile
+local writefile = writefile
+local makefolder = makefolder
+
+if not isfolder("BHU") then
+   makefolder("BHU")
+   
+   if not isfile("BHU/Budgie_Sounds") then
+      task.spawn(function()
+         writefile("BHU/Budgie_Sounds", game:HttpGet("https://github.com/ADSKerOffical/BHU2Project/raw/refs/heads/main/The%20chirping%20of%20a%20budgie.mp3"))
+      end)
+   end
 end
 
 local glockTool
@@ -23,11 +39,11 @@ local function getGlockInstanceFromAny()
       return (game.Players.LocalPlayer.Backpack:FindFirstChild("Glock") or game.Players.LocalPlayer.Character:FindFirstChild("Glock"))
    end
    for _, player in next, game.Players:GetPlayers() do
-      if player.Character and player.Character:FindFirstChildOfClass("Tool") and player.Character:FindFirstChildOfClass("Tool").Name == "Glock" and player.Character:FindFirstChildOfClass("Tool"):FindFirstChild("Event", true) then
+      if player.Character and player.Character:FindFirstChildOfClass("Tool") and player.Character:FindFirstChildOfClass("Tool").Name == "Glock" and player.Character:FindFirstChildOfClass("Tool"):FindFirstChild("Event") then
           specIndex = getupvalue(getsenv(player.Character.Glock.HandgunScript).OnFire, 14)
           return player.Character:FindFirstChildOfClass("Tool")
       end
-      if player:FindFirstChild("Backpack") and player.Backpack:FindFirstChild("Glock") and player.Backpack.Glock:FindFirstChild("Event", true) then
+      if player:FindFirstChild("Backpack") and player.Backpack:FindFirstChild("Glock") and player.Backpack.Glock:FindFirstChild("Event") then
           specIndex = getupvalue(getsenv(player.Backpack.Glock.HandgunScript).OnFire, 14)
           return player.Backpack.Glock
       end
@@ -44,7 +60,7 @@ tab.newButton("Get glock", "You get a Glock for further functions", function()
        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
      else 
         local tool = game.Players.LocalPlayer.Character:FindFirstChild("Glock") or game.Players.LocalPlayer.Backpack:FindFirstChild("Glock")
-        tool.Parent = game.Players.LocalPlayer.Characater
+        tool.Parent = game.Players.LocalPlayer.Character
     end 
 end)
 
@@ -77,6 +93,35 @@ tab.newButton("Modify glock", "Glock shoots without reloading, without the need 
     end)
 end)
 
+tab.newButton("Get all badges", "Get all badges ._.", function()
+    for _, part in next, workspace.Badge:GetChildren() do
+        firetouchinterest(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart", 3600), part, 0)
+    end
+end)
+
+local uniforms = {}
+pcall(function()
+for _, inst in next, game.Workspace.UniformNew:GetChildren() do table.insert(uniforms, inst.Name) end
+for _, inst in next, game.Workspace.Uniform:GetChildren() do table.insert(uniforms, inst.Name) end
+for index, name in next, uniforms do
+   uniforms[index] = string.gsub(name, "(%l)(%u)", "%1 %2")
+end
+end)
+
+tab.newDropdown("Wear uniform", "Try on the new suit", uniforms, function(ancd)
+    local realname = ancd:gsub(" ", "")
+    local uniform = game.Workspace.UniformNew:FindFirstChild(realname) or game.Workspace.Uniform:FindFirstChild(realname)
+    local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    local team = game.Players.LocalPlayer.Team.Name
+    
+    repeat task.wait()
+       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = uniform.ClickPart.CFrame
+       fireproximityprompt(uniform.ClickPart.ProximityPrompt, 0)
+    until game.Players.LocalPlayer.Team.Name ~= team
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
+
+local victim 
 tab.newInput("Kill player", "Kill the player by his name or display name", function(text)
     if glockTool == nil or not glockTool:FindFirstChild("Event") then
       glockTool = getGlockInstanceFromAny()
@@ -84,6 +129,7 @@ tab.newInput("Kill player", "Kill the player by his name or display name", funct
 
     for _, player in next, game.Players:GetPlayers() do
       if (string.find(player.Name:lower(), text:lower()) or string.find(player.DisplayName:lower(), text:lower())) and player ~= game.Players.LocalPlayer and player.UserId ~= 4636830533 then
+        victim = player
         hum = player.Character:WaitForChild("Humanoid")
         for _ = 1, 20 do
           glockTool.Event:FireServer(hum, "Glock", specIndex)
@@ -93,7 +139,34 @@ tab.newInput("Kill player", "Kill the player by his name or display name", funct
     end
 end)
 
+tab.newToggle("Loop kill player", "Cyclical killing of a player (the one you last killed using the 'Kill player' button). AND KEEP A GLOCK ON YOU", false, function(toggel)
+   andb = toggel
+   while andb and task.wait() do
+      if victim then
+         local hum = victim.Character:WaitForChild("Humanoid")
+         if hum and hum.Health > 0 and not hum.Parent:FindFirstChildOfClass("ForceField") then
+            if glockTool == nil or not glockTool:FindFirstChild("Event") then
+               glockTool = getGlockInstanceFromAny()
+            end
+            if glockTool then
+               glockTool.Event:FireServer(hum, "Glock", specIndex)
+            end
+         end
+      end
+   end
+end)
 
+tab.newButton("God mode", "You can\'t be killed", function()
+   for _, rem in next, game:GetDescendants() do
+      if rem:IsA("RemoteEvent") and rem.Name == "Receiver" and rem.Parent:IsA("Tool") then
+         rem:FireServer("Damage", game.Players.LocalPlayer.Character.Humanoid, 0/0)
+         break
+      end
+   end
+end)
+
+
+tab.newLabel("Special tools")
 
 tab.newButton("The core of suffering", "You god...", function()
     if glockTool == nil or not glockTool:FindFirstChild("Event") then
@@ -101,7 +174,7 @@ tab.newButton("The core of suffering", "You god...", function()
     end
     
     local tool = Instance.new("Tool", game.Players.LocalPlayer:WaitForChild("Backpack"))
-    tool.Name = "The core of suffering"
+    tool.Name = "The core of suffering󠁢󠁹󠀠󠁁󠁄󠁓󠁋󠁥󠁲󠀠󠀺󠀩"
     
     task.spawn(function()
        local letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -116,7 +189,8 @@ tab.newButton("The core of suffering", "You god...", function()
              tool.ToolTip = table.concat(str)
           end
        until not tool or tool.Parent == nil
-    end) -- t.me/
+    end) -- Я давным-давно сгнил изнутри, пожалуйста, избавьте меня от этой фрустрации. И да, на удивление я русский
+    -- Я знаю, что всем похуй на меня, но я всё жду, пока кто-то пробьет мою стену социофобии и напишет мне хоть точечку. Зачем я только     Ну, зато я дарю это счастье вам. Мой альтруизм ещё не полностью выгорел
 
     local handle = Instance.new("Part", tool)
     handle.Name = "Handle"
@@ -308,7 +382,7 @@ end
         game.Debris:AddItem(orbs, 3)
     end)
     
-    -- it's my telegram. Please write to me im alone
+    -- it's my telegram. Please write to me, im alone
     -- Oh well, no one will find these Easter eggs, and no one cares
     
     tool.Equipped:Connect(function()
@@ -320,9 +394,323 @@ end
     end)
 end)
 
+tab.newButton("Budgie", "Oh my little budgie. Destroy everyone with my budgie", function()
+   local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+   tool.Name = "Budgie"
+   tool.ToolTip = ""
+   tool.Grip = CFrame.Angles(0, math.rad(90), 0)
+   tool.RequiresHandle = false
+
+   local handle = Instance.new("Part", tool)
+   handle.Name = "Handle"
+
+local mesh = Instance.new("SpecialMesh", handle)
+mesh.MeshId = "rbxassetid://110778604682195"
+mesh.TextureId = "rbxassetid://82966045250136"
+mesh.Scale = Vector3.new(1, 1, 1)
+
+tool.Activated:Connect(function()
+   local budgie = handle:Clone()
+   budgie.CanCollide = true
+   budgie.CustomPhysicalProperties = PhysicalProperties.new(100, 0, 1, 1, 1)
+   budgie.Velocity = game.Players.LocalPlayer:GetMouse().Hit.LookVector * 300
+   budgie.Parent = workspace
+   game.Debris:AddItem(budgie, 10)
+   
+   budgie.Touched:Connect(function(part)
+      if not part:IsDescendantOf(game.Players.LocalPlayer.Character) and part.Parent:FindFirstChildOfClass("Humanoid") then
+         local humanoid = part.Parent:FindFirstChildOfClass("Humanoid")
+         if glockTool == nil or not glockTool:FindFirstChild("Event") then
+            glockTool = getGlockInstanceFromAny()
+         end
+         for _ = 1, 50 do glockTool.Event:FireServer(humanoid, "Glock", specIndex) end
+      elseif not part:IsDescendantOf(game.Players.LocalPlayer.Character) and not part.Parent:FindFirstChildOfClass("Humanoid") then
+      end
+   end)
+   
+      local sound = Instance.new("Sound", budgie)
+      sound.SoundId = getcustomasset("BHU/Budgie_Sounds")
+      sound.Volume = 1
+      sound.Looped = true
+      sound:Play()
+   end)
+end)
+
+tab.newButton("Blue Cancer", "Imagine that there\'s a very cool description here", function()
+   local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Blue Cancer"
+tool.ToolTip = "It claps very loudly"
+tool.Grip = CFrame.Angles(math.rad(0), math.rad(0), math.rad(0))
+tool.GripPos = Vector3.new(0, 0, 0)
+tool:SetAttribute("Awakened", fasle)
+
+local mainpart = Instance.new("Part")
+mainpart.Transparency = 0
+mainpart.Name = "Handle"
+mainpart.Size = Vector3.zero
+mainpart.Parent = tool
+
+local arm1p = Instance.new("Part")
+arm1p.Size = Vector3.new(1, 1, 1)
+arm1p.CanCollide = false
+arm1p.Parent = mainpart
+
+local arm2p = Instance.new("Part")
+arm2p.Size = Vector3.new(1, 1, 1)
+arm2p.CanCollide = false
+arm2p.Parent = mainpart
+
+local headp = Instance.new("Part")
+headp.Size = Vector3.new(1, 1, 1)
+headp.Parent = mainpart
+
+local arm1 = Instance.new("SpecialMesh")
+arm1.MeshId = "rbxassetid://13200088262"
+arm1.TextureId = "rbxassetid://13200088371"
+arm1.Scale = Vector3.new(0.6, 0.6, 0.6)
+arm1.Parent = arm1p
+
+local arm2 = arm1:Clone()
+arm2.Parent = arm2p
+
+local head = Instance.new("SpecialMesh")
+head.MeshId = "rbxassetid://13200081913"
+head.TextureId = "rbxassetid://13200082055"
+head.Scale = Vector3.new(0.7, 0.7, 0.7)
+head.Parent = headp
+
+local armjoint1 = Instance.new("Weld")
+armjoint1.Part0 = mainpart
+armjoint1.Part1 = arm1p
+armjoint1.C0 = CFrame.new(-1, 0, -0.3) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0))
+armjoint1.Parent = mainpart
+
+local armjoint2 = Instance.new("Weld")
+armjoint2.Part0 = mainpart
+armjoint2.Part1 = arm2p
+armjoint2.C0 = CFrame.new(1, 0, -0.3) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(180))
+armjoint2.Parent = mainpart
+
+local headjoint = Instance.new("Weld")
+headjoint.Part0 = mainpart
+headjoint.Part1 = headp
+headjoint.C0 = CFrame.new(0, 0, 0)
+headjoint.Parent = mainpart
+
+local lastPressTime = 0
+tool.Activated:Connect(function()
+  local currentTime = tick()
+            if currentTime - lastPressTime >= 1 then
+                lastPressTime = currentTime 
+local owner = tool.Parent
+local handle = mainpart
+
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://119332409093320"
+sound.Volume = 5
+sound.PlaybackSpeed = 0.9
+sound.Looped = false
+sound.Parent = handle
+sound:Play()
+game.Debris:AddItem(sound, 5)
+
+local pitch = Instance.new("PitchShiftSoundEffect")
+pitch.Octave = 0.7
+pitch.Priority = math.huge
+pitch.Parent = sound
+
+local shockwave = Instance.new("Part")
+shockwave.CFrame = handle.CFrame
+shockwave.Size = Vector3.zero
+shockwave.Material = "SmoothPlastic"
+shockwave.Color = Color3.new(1, 1, 1)
+shockwave.Anchored = true
+shockwave.CanCollide = false
+shockwave.Parent = workspace
+game.Debris:AddItem(shockwave, 4)
+
+local modelsw = Instance.new("SpecialMesh")
+modelsw.Scale = Vector3.new(1, 1, 1)
+modelsw.MeshId = "rbxassetid://173770780"
+modelsw.Parent = shockwave
+
+local partTweenn2 = game:GetService("TweenService"):Create(shockwave, TweenInfo.new(0.7, Enum.EasingStyle.Quad), {
+        Transparency = 1
+    })
+    partTweenn2:Play()
+    
+local partTweenn2 = game:GetService("TweenService"):Create(modelsw, TweenInfo.new(0.7, Enum.EasingStyle.Quad), {
+        Scale = Vector3.new(120, 1, 120)
+    })
+    partTweenn2:Play()
+
+ local humanoids = {}
+for _, part in next, workspace:GetPartBoundsInRadius(handle.Position, 40) do
+    if part.Parent:IsA("Model") and part.Parent:FindFirstChildOfClass("Humanoid") and not part:IsDescendantOf(owner) then
+      if not table.find(humanoids, part.Parent:FindFirstChildOfClass("Humanoid")) then
+        table.insert(humanoids, part.Parent:FindFirstChildOfClass("Humanoid"))
+      end
+    end
+  end
+
+for _, humanoid in next, humanoids do 
+  if glockTool == nil or not glockTool:FindFirstChild("Event") then
+     glockTool = getGlockInstanceFromAny()
+  end
+  for _ = 1, 250 do
+     glockTool.Event:FireServer(humanoid, "Glock", specIndex)
+  end
+end
+            end
+end)
+
+repeat task.wait(wait()) until tool.Parent == game.Players.LocalPlayer.Character
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://2261507666"
+    sound.Volume = 2
+    sound.PlaybackSpeed = 1
+    sound.Looped = false
+    sound.Parent = mainpart
+    sound:Play()
+    game.Debris:AddItem(sound, 6)
+end)
+
+tab.newButton("Janora", "JANORA", function()
+  local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Jarona"
+tool.ToolTip = "JARONA"
+tool.RequiresHandle = false
+tool:SetAttribute("Jarona_Act", false)
+
+    local screenGui = Instance.new("ScreenGui", game.CoreGui)
+    screenGui.Name = "Jaronas"
+    screenGui.ResetOnSpawn = false
+    screenGui.Enabled = false
+    
+    local Button = Instance.new("TextButton")
+    Button.Name = "Cumalaka"
+    Button.Size = UDim2.new(0.05, 0.05, 0.05, 5)
+    Button.Position = UDim2.new(0.76, 0, 0.6, 0)
+    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextScaled = true
+    Button.Text = "Jarona Rush"
+    Button.Parent = screenGui
+    
+    local cooldown = 0
+    Button.MouseButton1Click:Connect(function()
+       if tick() - cooldown >= 2 then
+          cooldown = tick()
+local bv = Instance.new("BodyVelocity", game.Players.LocalPlayer.Character.HumanoidRootPart)
+bv.P = math.huge
+bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+bv.Velocity = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.LookVector * 200
+game.Debris:AddItem(bv, 1)
+
+local sound = Instance.new("Sound", game.Players.LocalPlayer.Character.HumanoidRootPart)
+sound.SoundId = "rbxassetid://138210320"
+sound.Volume = 4
+
+for _, part in next, game.Players.LocalPlayer.Character:GetChildren() do
+   if part:IsA("BasePart") then
+      task.spawn(function()
+      part.CustomPhysicalProperties = PhysicalProperties.new(80, 1, 1, 1, 1)
+      local con = part.Touched:Connect(function(hit)
+         if not hit:IsDescendantOf(game.Players.LocalPlayer.Character) and hit.Parent:FindFirstChildOfClass("Humanoid") then
+            local humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
+            if glockTool == nil or not glockTool:FindFirstChild("Event") then
+               glockTool = getGlockInstanceFromAny()
+            end
+            glockTool.Event:FireServer(humanoid, "Glock", specIndex)
+            sound:Play()
+         end
+      end)
+      repeat wait() until bv.Parent == nil or not bv
+         part:ResetPropertyToDefault("CustomPhysicalProperties")
+         if con then con:Disconnect() end
+      end)
+   end
+end
+
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame *= CFrame.Angles(math.rad(0), 0, math.rad(180))
+repeat task.wait()
+   game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(200, 200, 200)
+   game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame *= CFrame.Angles(math.rad(math.random(-360, 360)), math.rad(math.random(-360, 360)), math.rad(math.random(-360, 360)))
+until not bv or bv == nil or bv.Parent == nil
+for _, part in next, game.Players.LocalPlayer.Character:GetChildren() do
+    if part:IsA("BasePart") then
+       part.AssemblyAngularVelocity = Vector3.zero
+       part.AssemblyLinearVelocity = Vector3.zero
+    end
+ end
+game.Players.LocalPlayer.Character.Humanoid:ChangeState("GettingUp")
+      end
+  end)
+  
+  local Button2 = Button:Clone()
+  Button2.Position = UDim2.new(0.82, 0, 0.6, 0)
+  Button2.Text = "Get up"
+  Button2.Parent = screenGui
+  
+  Button2.MouseButton1Click:Connect(function()
+     game.Players.LocalPlayer.Character.Humanoid:ChangeState("GettingUp")
+  end)
+
+tool.Activated:Connect(function()
+   game.Players.LocalPlayer.Character.Humanoid:ChangeState("FallingDown")
+   game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity += game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.LookVector * 300
+   
+   local jaronas = {"92391018541866", "126883165922492", "116285593175641", "139878098626794"}
+   if not tool:GetAttribute("Jarona_Act") == true then
+      local sound = Instance.new("Sound", game.Players.LocalPlayer.Character.HumanoidRootPart)
+      sound.SoundId = "rbxassetid://" .. jaronas[math.random(1, 4)]
+      sound.Volume = 1
+      sound:Play()
+      game.Debris:AddItem(sound, 5)
+   end
+   
+   local sound = Instance.new("Sound", game.Players.LocalPlayer.Character.HumanoidRootPart)
+   sound.SoundId = "rbxassetid://138210320"
+   sound.Volume = 5
+   sound.PlaybackSpeed = 1
+   sound.Looped = false
+   game.Debris:AddItem(sound, 5)
+   
+   for _, part in next, game.Players.LocalPlayer.Character:GetChildren() do
+      if part:IsA("BasePart") then
+         task.spawn(function()
+            if not tool:GetAttribute("Jarona_Act") == true then
+               part.CustomPhysicalProperties = PhysicalProperties.new(99, 1, 1, 1, 1)
+               local con = part.Touched:Connect(function(par)
+                  if not par:IsDescendantOf(game.Players.LocalPlayer.Character) and par.Parent:FindFirstChildOfClass("Humanoid") then
+                     local humanoid = par.Parent:FindFirstChildOfClass("Humanoid")
+                     sound:Play()
+                     game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = (humanoid.RootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Unit * -250
+                     if glockTool == nil or not glockTool:FindFirstChild("Event") then
+                        glockTool = getGlockInstanceFromAny()
+                     end
+                     for _ = 1, 10 do glockTool.Event:FireServer(humanoid, "Glock", specIndex) end
+                  end
+               end)
+                  repeat task.wait(wait()) until game.Players.LocalPlayer.Character.Humanoid:GetState() ~= Enum.HumanoidStateType.FallingDown
+               part:ResetPropertyToDefault("CustomPhysicalProperties")
+               if con then con:Disconnect() end
+               tool:SetAttribute("Jarona_Act", false)
+            end
+         end)
+      end
+   end
+   tool:SetAttribute("Jarona_Act", true)
+end)
+
+    tool.Equipped:Connect(function()
+       screenGui.Enabled = true
+         tool.Unequipped:Wait()
+       screenGui.Enabled = false
+    end)
+end)
+
 --[[
 -- Easter egg
-local orb = handle:Clone()
-orb.Position = Vector3.new(0, 0, 0)
-orb.Anchored = true
-]]--
+local author = 
+]]--.. -- --  /  ...  ---  /  ..-.  ..-  -.-.  -.-  .  -..  /  ..-  .--.
