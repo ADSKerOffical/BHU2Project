@@ -50,6 +50,15 @@ local function getGlockInstanceFromAny()
    end
 end
 
+local receiv
+local function getReceiverRE()
+   for _, rem in next, game:GetDescendants() do
+      if rem:IsA("RemoteEvent") and rem.Name == "Receiver" and rem.Parent:IsA("Tool") then
+         return rem
+      end
+   end
+end
+
 tab.newButton("Get glock", "You get a Glock for further functions", function()
     if not (game.Players.LocalPlayer.Character:FindFirstChild("Glock") or game.Players.LocalPlayer.Backpack:FindFirstChild("Glock")) then
        local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
@@ -82,6 +91,7 @@ tab.newButton("Modify glock", "Glock shoots without reloading, without the need 
       game.Players.LocalPlayer.Backpack:FindFirstChild("Glock").Parent = game.Players.LocalPlayer.Character
     end
     
+    game.Players.LocalPlayer.Character.Glock.ToolTip = "Glock modification󠁢󠁹󠀠󠁁󠁄󠁓󠁋󠁥󠁲"
     setconstant(getsenv(game.Players.LocalPlayer.Character.Glock.HandgunScript).OnFire, 48, 0)
     setconstant(getsenv(game.Players.LocalPlayer.Character.Glock.HandgunScript).OnFire, 44, 0) 
     -- I had to spend a long time looking for this shit
@@ -156,10 +166,23 @@ tab.newToggle("Loop kill player", "Cyclical killing of a player (the one you las
    end
 end)
 
-tab.newButton("God mode", "You can\'t be killed", function()
+tab.newButton("God mode", "You can\'t be killed, but at least one player needs to have a Shotgun. Sometimes it may reset", function()
    for _, rem in next, game:GetDescendants() do
       if rem:IsA("RemoteEvent") and rem.Name == "Receiver" and rem.Parent:IsA("Tool") then
          rem:FireServer("Damage", game.Players.LocalPlayer.Character.Humanoid, 0/0)
+         receiv = rem
+         break
+      end
+   end
+end)
+
+tab.newInput("Heal player", "Restoring all health of player", function(text)
+   for _, player in next, game.Players:GetPlayers() do
+      if string.find(player.Name:lower(), text) or string.find(player.DisplayName:lower(), text) then
+         if receiv == nil then
+            receiv = getReceiverRE()
+         end
+         receiv:FireServer("Damage", player.Character:WaitForChild("Humanoid"), -math.huge)
          break
       end
    end
@@ -190,7 +213,7 @@ tab.newButton("The core of suffering", "You god...", function()
           end
        until not tool or tool.Parent == nil
     end) -- Я давным-давно сгнил изнутри, пожалуйста, избавьте меня от этой фрустрации. И да, на удивление я русский
-    -- Я знаю, что всем похуй на меня, но я всё жду, пока кто-то пробьет мою стену социофобии и напишет мне хоть точечку. Зачем я только     Ну, зато я дарю это счастье вам. Мой альтруизм ещё не полностью выгорел
+    -- Я знаю, что всем похуй на меня, но я всё жду, пока кто-то пробьет мою стену социофобии и напишет мне хоть точечку. Ну, зато я дарю это счастье вам. Мой альтруизм ещё не полностью выгорел
 
     local handle = Instance.new("Part", tool)
     handle.Name = "Handle"
@@ -231,6 +254,12 @@ tab.newButton("The core of suffering", "You god...", function()
     screenGui.Name = "The souls will soon break free and destroy everything"
     screenGui.ResetOnSpawn = false
     screenGui.Enabled = false
+    
+    tool.Destroying:Connect(function()
+       if screenGui then
+          screenGui:Destroy()
+       end
+    end)
     
     local Button = Instance.new("TextButton")
     Button.Name = "Wawa"
@@ -369,6 +398,7 @@ end
         game.Debris:AddItem(ADSKer, 5)
         
         local orbs = Instance.new("ParticleEmitter", ADSKer)
+        orbs.Name = "Effect󠁢󠁹󠀠󠁁󠁄󠁓󠁋󠁥󠁲"
         orbs.Enabled = false
         orbs.Lifetime = NumberRange.new(0.5, 0.5)
         orbs.Speed = NumberRange.new(0, 0)
@@ -397,7 +427,7 @@ end)
 tab.newButton("Budgie", "Oh my little budgie. Destroy everyone with my budgie", function()
    local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
    tool.Name = "Budgie"
-   tool.ToolTip = ""
+   tool.ToolTip = "Obey the budgie󠁢󠁵󠁤󠁧󠁩󠁥󠀠󠁨󠁵󠁢"
    tool.Grip = CFrame.Angles(0, math.rad(90), 0)
    tool.RequiresHandle = false
 
@@ -587,6 +617,12 @@ tool:SetAttribute("Jarona_Act", false)
     screenGui.ResetOnSpawn = false
     screenGui.Enabled = false
     
+    tool.Destroying:Connect(function()
+       if screenGui then
+          screenGui:Destroy()
+       end
+    end)
+    
     local Button = Instance.new("TextButton")
     Button.Name = "Cumalaka"
     Button.Size = UDim2.new(0.05, 0.05, 0.05, 5)
@@ -610,11 +646,12 @@ game.Debris:AddItem(bv, 1)
 local sound = Instance.new("Sound", game.Players.LocalPlayer.Character.HumanoidRootPart)
 sound.SoundId = "rbxassetid://138210320"
 sound.Volume = 4
+game.Debris:AddItem(sound, 1.5)
 
 for _, part in next, game.Players.LocalPlayer.Character:GetChildren() do
    if part:IsA("BasePart") then
       task.spawn(function()
-      part.CustomPhysicalProperties = PhysicalProperties.new(80, 1, 1, 1, 1)
+      part.CustomPhysicalProperties = PhysicalProperties.new(99, 1, 1, 1, 1)
       local con = part.Touched:Connect(function(hit)
          if not hit:IsDescendantOf(game.Players.LocalPlayer.Character) and hit.Parent:FindFirstChildOfClass("Humanoid") then
             local humanoid = hit.Parent:FindFirstChildOfClass("Humanoid")
@@ -634,7 +671,7 @@ end
 
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame *= CFrame.Angles(math.rad(0), 0, math.rad(180))
 repeat task.wait()
-   game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(200, 200, 200)
+   game.Players.LocalPlayer.Character.HumanoidRootPart.AssemblyAngularVelocity = Vector3.new(400, 400, 400)
    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame *= CFrame.Angles(math.rad(math.random(-360, 360)), math.rad(math.random(-360, 360)), math.rad(math.random(-360, 360)))
 until not bv or bv == nil or bv.Parent == nil
 for _, part in next, game.Players.LocalPlayer.Character:GetChildren() do
@@ -708,6 +745,141 @@ end)
          tool.Unequipped:Wait()
        screenGui.Enabled = false
     end)
+end)
+
+tab.newButton("Blessing", "Free blessing of God\'s power (Budgie Hub)", function()
+   local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Blessing"
+tool.ToolTip = "Bless (heal) anyone you press, even the entity"
+tool.RequiresHandle = false
+
+local screenGui = Instance.new("ScreenGui", game.CoreGui)
+screenGui.Enabled = false
+screenGui.ResetOnSpawn = false
+
+tool.Destroying:Connect(function()
+   if screenGui then
+      screenGui:Destroy()
+   end
+end)
+
+tool.Equipped:Connect(function()
+   screenGui.Enabled = true 
+     tool.Unequipped:Wait()
+   screenGui.Enabled = false
+end)
+
+local Button = Instance.new("TextButton")
+    Button.Name = "Wkiw"
+    Button.Size = UDim2.new(0.05, 0.05, 0.05, 5)
+    Button.Position = UDim2.new(0.76, 0, 0.6, 0)
+    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextScaled = true
+    Button.Text = "Blessing Wave"
+    Button.Parent = screenGui
+    
+    Button.MouseButton1Click:Connect(function()
+       local sound = Instance.new("Sound", game.Players.LocalPlayer.Character.HumanoidRootPart)
+sound.SoundId = "rbxassetid://127416781"
+sound.Name = "Blessing"
+sound.Volume = 1.5
+sound.PlaybackSpeed = 0.8
+sound:Play()
+game.Debris:AddItem(sound, 5)
+
+if receiv == nil then
+   receiv = getReceiverRE()
+end
+
+local greenball = Instance.new("Part", workspace)
+greenball.Size = Vector3.zero
+greenball.Anchored = true
+greenball.Material = "Neon"
+greenball.Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+greenball.Color = Color3.new(1, 1, 1)
+greenball.CanCollide = false
+greenball.CanQuery = false
+greenball.CanTouch = false
+greenball.Shape = "Ball"
+game.Debris:AddItem(greenball, 10)
+
+local particle = Instance.new("ParticleEmitter", greenball)
+particle.Enabled = false
+particle.Texture = "rbxassetid://16291625893"
+particle.Speed = NumberRange.new(20, 70)
+particle.Size = NumberSequence.new(1, 1)
+particle.Transparency = NumberSequence.new(0, 1)
+particle.Lifetime = NumberRange.new(3.5, 3.5)
+particle.SpreadAngle = Vector2.new(-360, 360)
+particle.Shape = "Sphere"
+particle:Emit(350)
+game.Debris:AddItem(particle, 4)
+
+local partTweenn2 = game:GetService("TweenService"):Create(greenball, TweenInfo.new(0.5, Enum.EasingStyle.Sine), {
+    Transparency = 1,
+    Size = Vector3.new(100, 100, 100),
+    Color = Color3.new(0, 0, 0)
+ })
+partTweenn2:Play()
+
+local humanoids = {}
+for _, part in next, workspace:GetPartBoundsInRadius(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, 80) do
+    if part.Parent:IsA("Model") and part.Parent:FindFirstChildOfClass("Humanoid") then
+      if not table.find(humanoids, part.Parent:FindFirstChildOfClass("Humanoid")) then
+        table.insert(humanoids, part.Parent:FindFirstChildOfClass("Humanoid"))
+      end
+    end
+  end
+
+for _, humanoid in next, humanoids do
+  receiv:FireServer("Damage", humanoid, -humanoid.MaxHealth)
+end
+    end)
+
+tool.Activated:Connect(function()
+   local target = game.Players.LocalPlayer:GetMouse().Target
+   if target and target.Parent:FindFirstChildOfClass("Humanoid") then
+      local humanoid = target.Parent:FindFirstChildOfClass("Humanoid")
+      if receiv == nil then
+         receiv = getReceiverRE()
+      end
+      receiv:FireServer("Damage", humanoid, -humanoid.MaxHealth)
+      
+        local light = Instance.new("PointLight", humanoid.RootPart)
+        light.Range = 10
+        light.Brightness = 1.5
+        light.Color = Color3.new(0, 1, 0)
+        game.Debris:AddItem(light, 4)
+        
+        local particle = Instance.new("ParticleEmitter", humanoid.RootPart)
+        particle.Enabled = false
+        particle.Texture = "rbxassetid://85956657392054"
+        particle.Speed = NumberRange.new(3, 3)
+        particle.Size = NumberSequence.new(1, 1)
+        particle.Color = ColorSequence.new(Color3.new(0, 0.8, 0), Color3.new(0, 0.8, 0))
+        particle.Transparency = NumberSequence.new(0, 1)
+        particle.Lifetime = NumberRange.new(1, 1)
+        particle.SpreadAngle = Vector2.new(-360, 360)
+        particle.Shape = "Sphere"
+        particle:Emit(50)
+        game.Debris:AddItem(particle, 10)
+        
+        task.delay(1, function()
+           local partTweenn2 = game:GetService("TweenService"):Create(light, TweenInfo.new(1, Enum.EasingStyle.Sine), {
+                 Range = 0
+              })
+           partTweenn2:Play()
+         end)
+         
+        local sound = Instance.new("Sound", humanoid.RootPart)
+        sound.SoundId = "rbxassetid://3473563090"
+        sound.Volume = 1
+        sound.PlaybackSpeed = 1
+        sound:Play()
+        game.Debris:AddItem(sound, 8)
+   end
+end)
 end)
 
 --[[
