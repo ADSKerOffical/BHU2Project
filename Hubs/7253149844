@@ -166,7 +166,7 @@ tab.newToggle("Loop kill player", "Cyclical killing of a player (the one you las
    end
 end)
 
-tab.newButton("God mode", "You can\'t be killed, but at least one player needs to have a Shotgun. Sometimes it may reset", function()
+tab.newButton("Godmode", "You can\'t be killed, but at least one player needs to have a Shotgun. Sometimes it may reset", function()
    for _, rem in next, game:GetDescendants() do
       if rem:IsA("RemoteEvent") and rem.Name == "Receiver" and rem.Parent:IsA("Tool") then
          rem:FireServer("Damage", game.Players.LocalPlayer.Character.Humanoid, 0/0)
@@ -188,6 +188,20 @@ tab.newInput("Heal player", "Restoring all health of player", function(text)
    end
 end)
 
+tab.newToggle("Loop godmode", "If you want to get the year mod cyclically", false, function(togge)
+   uehe = togge
+   while uehe and task.wait() do
+      if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+         if not (game.Players.LocalPlayer.Character.Humanoid.Health ~= game.Players.LocalPlayer.Character.Humanoid.Health) then
+            if receiv == nil then 
+               receiv = getReceiverRE()
+            end
+            receiv:FireServer("Damage", game.Players.LocalPlayer.Character.Humanoid, 0/0)
+         end
+      end
+   end 
+end)
+
 
 tab.newLabel("Special tools")
 
@@ -203,13 +217,18 @@ tab.newButton("The core of suffering", "You god...", function()
        local letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
        repeat task.wait()
           if tool.Parent == game.Players.LocalPlayer.Character then
-            local str = {}
-            for _ = 1, 30 do
+            local str1 = {}
+            local str2 = {}
+            for ism = 1, 60 do
                local index = math.random(1, #letters)
                local word = letters:sub(index, index)
-               table.insert(str, word)
+               if ism <= 30 then
+                  table.insert(str1, word)
+               else
+                  table.insert(str2, word)
+               end
              end
-             tool.ToolTip = table.concat(str)
+             tool.ToolTip = table.concat(str1) .. " TRUE CORE OF SUFFERING " .. table.concat(str2)
           end
        until not tool or tool.Parent == nil
     end) -- Я давным-давно сгнил изнутри, пожалуйста, избавьте меня от этой фрустрации. И да, на удивление я русский
@@ -879,6 +898,49 @@ tool.Activated:Connect(function()
         sound:Play()
         game.Debris:AddItem(sound, 8)
    end
+end)
+end)
+
+tab.newButton("Extinction", "You can change people\'s destinies with just a snap of your fingers (improvisation)", function()
+  local tool = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+tool.Name = "Extinction"
+tool.ToolTip = "With a snap of my fingers, I can destroy anyone I want"
+tool.RequiresHandle = false
+
+tool.Activated:Connect(function()
+    local target = game.Players.LocalPlayer:GetMouse().Target
+    if target and target.Parent:FindFirstChildOfClass("Humanoid") then
+       local humanoid = target.Parent:FindFirstChildOfClass("Humanoid")
+       if receiv == nil then 
+          receiv = getReceiverRE()
+       end
+       receiv:FireServer("Damage", humanoid, math.huge)
+       
+        for _, part in next, humanoid.Parent:GetDescendants() do
+           if part:IsA("BasePart") then
+              part.Transparency = 1
+              part.CanCollide = false
+              part.CanQuery = false
+           end
+        end
+        
+        local sound = Instance.new("Sound", humanoid.RootPart)
+        sound.SoundId = "rbxassetid://106306557753297"
+        sound.Volume = 1
+        sound:Play()
+
+        local particle = Instance.new("ParticleEmitter", humanoid.RootPart)
+        particle.Enabled = false
+        particle.Texture = "rbxassetid://137278198363013"
+        particle.Speed = NumberRange.new(3, 3)
+        particle.Size = NumberSequence.new(1, 1)
+        particle.Transparency = NumberSequence.new(0, 1)
+        particle.Lifetime = NumberRange.new(2, 2)
+        particle.SpreadAngle = Vector2.new(-360, 360)
+        particle.Shape = "Sphere"
+        particle:Emit(25)
+        game.Debris:AddItem(particle, 10)
+    end
 end)
 end)
 
