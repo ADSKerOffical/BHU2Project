@@ -1,0 +1,11 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/lolpoppyus/Roblox-Lua/master/Pop%20UI%20Lib", true))()
+
+-- 7541759836
+local Tab = library:Tab("Budgie Hub")
+
+Tab:Toggle("Farm robots", function(Value)
+  jjd = Value
+   while jjd and task.wait() do
+      game:GetService("ReplicatedStorage").Project.RemoteEvent.ControlMessageEvent:FireServer(2, {1, 1, 14})
+   end
+end)
